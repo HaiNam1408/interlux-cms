@@ -45,7 +45,6 @@ export const CategoryService = {
 
     async updateCategory(id: number, category: any) {
         try {
-            console.log(category);
             delete category.children;
             const response = await http.put<Category>(`/category/${id}`, category);
             return response;

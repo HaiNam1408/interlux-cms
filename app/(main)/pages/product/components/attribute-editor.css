@@ -1,0 +1,47 @@
+.attribute-editor {
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 4px !important;
+    background-color: #f8f9fa !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+.attribute-editor h5 {
+    margin-top: 0 !important;
+    margin-bottom: 1rem !important;
+    color: #495057 !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+}
+
+.attribute-editor .p-inputgroup {
+    margin-bottom: 0.75rem !important;
+    display: flex !important;
+    width: 100% !important;
+}
+
+.attribute-editor .p-inputgroup-addon {
+    min-width: 60px !important;
+    font-weight: 600 !important;
+    background-color: #e9ecef !important;
+    color: #495057 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.5rem 0.75rem !important;
+    border: 1px solid #ced4da !important;
+}
+
+.attribute-editor .p-inputtext {
+    flex: 1 !important;
+}
+
+.attribute-editor .p-button {
+    margin-left: 0.5rem !important;
+}
+
+.attribute-editor .p-button-success {
+    margin-top: 0.5rem !important;
+}

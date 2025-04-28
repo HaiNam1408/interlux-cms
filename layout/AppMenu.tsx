@@ -76,7 +76,7 @@ const AppMenu = () => {
             label: 'Marketing & Sales',
             items: [
                 {
-                    label: 'Vouchers',
+                    label: 'Coupon',
                     icon: 'pi pi-fw pi-ticket',
                     to: '/pages/crud'
                 },
