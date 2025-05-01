@@ -5,12 +5,9 @@ import { DataTable } from 'primereact/datatable';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
-import { VariationApiService, Variation, VariationOption } from '@/demo/service/VariationApiService';
-import { PaginatedData } from '@/types/response';
+import { VariationApiService, Variation, VariationOption, VariationStatus } from '@/demo/service/VariationApiService';
 import { useParams, useRouter } from 'next/navigation';
 import '../../styles.css';
-
-// Import components
 import {
     VariationOptionTable,
     VariationOptionForm,
@@ -30,7 +27,7 @@ const VariationOptionPage = () => {
         value: '',
         variationId: variationId,
         sort: 0,
-        status: 'ACTIVE',
+        status: VariationStatus.ACTIVE,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
     };
@@ -72,7 +69,7 @@ const VariationOptionPage = () => {
                     detail: 'Variation not found',
                     life: 3000
                 });
-                router.push('/variation');
+                router.push('/pages/variation');
             }
         } catch (error) {
             console.error('Error loading variation:', error);
@@ -82,17 +79,17 @@ const VariationOptionPage = () => {
                 detail: 'Failed to load variation',
                 life: 3000
             });
-            router.push('/variation');
+            router.push('/pages/variation');
         }
     };
 
     const loadOptions = () => {
         setLoading(true);
         VariationApiService.getVariationOptions(variationId, currentPage, rows)
-            .then((response: PaginatedData<VariationOption> | null) => {
+            .then((response: VariationOption[] | null) => {
                 if (response) {
-                    setOptions(response.data);
-                    setTotalRecords(response.meta.total);
+                    setOptions(response);
+                    setTotalRecords(response.length);
                 } else {
                     setOptions([]);
                     setTotalRecords(0);
@@ -291,7 +288,7 @@ const VariationOptionPage = () => {
 
     const onStatusChange = (e: { value: string }) => {
         let _option = { ...option };
-        _option.status = e.value as 'ACTIVE' | 'INACTIVE' | 'DRAFT';
+        _option.status = e.value as VariationStatus;
         setOption(_option);
     };
 
@@ -321,7 +318,7 @@ const VariationOptionPage = () => {
                             label="Back to Variations" 
                             icon="pi pi-arrow-left" 
                             className="p-button-outlined"
-                            onClick={() => router.push('/variation')}
+                            onClick={() => router.push('/pages/variation')}
                         />
                     </div>
                     

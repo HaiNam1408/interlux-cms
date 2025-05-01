@@ -6,7 +6,7 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
 import { ProductApiService } from '@/demo/service/ProductApiService';
-import { VariationApiService, ProductVariation, Variation, VariationOption } from '@/demo/service/VariationApiService';
+import { VariationApiService, ProductVariation, Variation, VariationOption, VariationStatus } from '@/demo/service/VariationApiService';
 import { PaginatedData } from '@/types/response';
 import { useParams, useRouter } from 'next/navigation';
 import './styles.css';
@@ -37,7 +37,7 @@ const ProductVariationPage = () => {
         inventory: 0,
         images: [],
         isDefault: false,
-        status: 'ACTIVE',
+        status: VariationStatus.ACTIVE,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         options: []
@@ -345,7 +345,7 @@ const ProductVariationPage = () => {
 
     const onStatusChange = (e: any) => {
         let _variation = { ...productVariation };
-        _variation.status = e.value as 'ACTIVE' | 'INACTIVE' | 'DRAFT';
+        _variation.status = e.value as VariationStatus;
         setProductVariation(_variation);
     };
 
@@ -395,9 +395,8 @@ const ProductVariationPage = () => {
     };
 
     const statusOptions = [
-        { label: 'ACTIVE', value: 'ACTIVE' },
-        { label: 'INACTIVE', value: 'INACTIVE' },
-        { label: 'DRAFT', value: 'DRAFT' }
+        { label: 'ACTIVE', value: VariationStatus.ACTIVE },
+        { label: 'INACTIVE', value: VariationStatus.INACTIVE }
     ];
 
     return (

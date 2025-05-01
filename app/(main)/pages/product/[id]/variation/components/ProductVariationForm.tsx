@@ -99,16 +99,7 @@ const ProductVariationForm = (props: ProductVariationFormProps) => {
     );
 
     return (
-        <Dialog
-            visible={visible}
-            onHide={onHide}
-            style={{ width: '80vw', maxWidth: '1200px' }}
-            header={productVariation.id ? 'Edit Product Variation' : 'Create Product Variation'}
-            modal
-            className="p-fluid"
-            footer={dialogFooter}
-            maximizable
-        >
+        <Dialog visible={visible} onHide={onHide} style={{ width: '80vw', maxWidth: '1200px' }} header={productVariation.id ? 'Edit Product Variation' : 'Create Product Variation'} modal className="p-fluid" footer={dialogFooter} maximizable>
             <div className="formgrid grid">
                 <div className="field col-12">
                     <label htmlFor="sku">SKU</label>
@@ -169,12 +160,7 @@ const ProductVariationForm = (props: ProductVariationFormProps) => {
                             <i className="pi pi-exclamation-triangle mr-2"></i>
                             <span>No variation options available. Please create variations and options first.</span>
                             <div className="mt-2">
-                                <Button
-                                    label="Go to Variations"
-                                    icon="pi pi-external-link"
-                                    className="p-button-sm p-button-text"
-                                    onClick={() => window.open('/pages/variation', '_blank')}
-                                />
+                                <Button label="Go to Variations" icon="pi pi-external-link" className="p-button-sm p-button-text" onClick={() => window.open('/pages/variation', '_blank')} />
                             </div>
                         </div>
                     )}
@@ -182,7 +168,21 @@ const ProductVariationForm = (props: ProductVariationFormProps) => {
 
                 <div className="field col-12">
                     <label htmlFor="images">Images</label>
-                    <FileUpload ref={fileUploadRef} multiple accept="image/*" maxFileSize={1000000} emptyTemplate={<p className="m-0">Drag and drop images here to upload.</p>} />
+                    <FileUpload
+                        ref={fileUploadRef}
+                        name="images"
+                        multiple
+                        accept="image/*"
+                        maxFileSize={1000000}
+                        auto={true}
+                        mode="advanced"
+                        chooseLabel="Choose Images"
+                        cancelLabel="Cancel"
+                        uploadLabel=" "
+                        className="hide-upload-button"
+                        customUpload={true}
+                        emptyTemplate={<p className="m-0">Drop images here to upload.</p>}
+                    />
                 </div>
 
                 {productVariation.images && productVariation.images.length > 0 && (

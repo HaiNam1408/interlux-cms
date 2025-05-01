@@ -5,7 +5,7 @@ import { DataTable } from 'primereact/datatable';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
-import { VariationApiService, Variation } from '@/demo/service/VariationApiService';
+import { VariationApiService, Variation, VariationStatus } from '@/demo/service/VariationApiService';
 import { PaginatedData } from '@/types/response';
 import './styles.css';
 
@@ -23,7 +23,8 @@ const VariationPage = () => {
         name: '',
         slug: '',
         sort: 0,
-        status: 'ACTIVE',
+        status: VariationStatus.ACTIVE,
+        options: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
     };
@@ -254,7 +255,7 @@ const VariationPage = () => {
 
     const onStatusChange = (e: { value: string }) => {
         let _variation = { ...variation };
-        _variation.status = e.value as 'ACTIVE' | 'INACTIVE' | 'DRAFT';
+        _variation.status = e.value as VariationStatus;
         setVariation(_variation);
     };
 

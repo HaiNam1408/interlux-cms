@@ -25,7 +25,7 @@ export interface Variation {
     name: string;
     slug: string;
     sort?: number;
-    status: 'ACTIVE' | 'INACTIVE' | 'DRAFT';
+    status: VariationStatus;
     options: VariationOption[];
     createdAt: string;
     updatedAt: string;
@@ -38,7 +38,7 @@ export interface VariationOption {
     value?: string;
     variationId: number;
     sort?: number;
-    status: 'ACTIVE' | 'INACTIVE' | 'DRAFT';
+    status: VariationStatus;
     createdAt: string;
     updatedAt: string;
 }
@@ -52,7 +52,7 @@ export interface ProductVariation {
     inventory: number;
     images?: any[];
     isDefault: boolean;
-    status: 'ACTIVE' | 'INACTIVE' | 'DRAFT';
+    status: VariationStatus;
     createdAt: string;
     updatedAt: string;
     options?: ProductVariationOption[];
@@ -63,6 +63,11 @@ export interface ProductVariationOption {
     productVariationId: number;
     variationOptionId: number;
     variationOption?: VariationOption;
+}
+
+export enum VariationStatus {
+    ACTIVE = 'ACTIVE',
+    INACTIVE = 'INACTIVE'
 }
 
 export const VariationApiService = {
