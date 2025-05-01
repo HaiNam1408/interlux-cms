@@ -95,7 +95,7 @@ const ProductTable = (props: ProductTableProps) => {
     const statusBodyTemplate = (rowData: Product) => {
         // Ensure status is available and convert to string if needed
         const status = rowData.status ? rowData.status.toString() : 'UNKNOWN';
-        
+
         return (
             <>
                 <span className="p-column-title">Status</span>
@@ -110,7 +110,20 @@ const ProductTable = (props: ProductTableProps) => {
         return (
             <div className="flex">
                 <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" onClick={() => onEdit(rowData)} />
-                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => onDelete(rowData)} />
+                <Button icon="pi pi-trash" rounded severity="warning" className="mr-2" onClick={() => onDelete(rowData)} />
+                <Button
+                    icon="pi pi-list"
+                    rounded
+                    severity="info"
+                    tooltip="Manage Variations"
+                    tooltipOptions={{ position: 'top' }}
+                    onClick={() => {
+                        // Navigate to product variations page
+                        const url = `/pages/product/${rowData.id}/variation`;
+                        console.log(`Navigating to: ${url}`);
+                        window.location.href = url;
+                    }}
+                />
             </div>
         );
     };

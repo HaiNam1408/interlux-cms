@@ -31,16 +31,13 @@ export const ProductApiService = {
             };
 
             const response = await http.get<any>('/product', { params: queryParams });
-            // API trả về dữ liệu trong cấu trúc { message, statusCode, data: { data: [...], meta: {...} } }
             if (response.data) {
-                // Nếu cấu trúc là { data: { data: [...], meta: {...} } }
                 if (response.data.data && response.data.data.data) {
                     const result = {
                         data: response.data.data.data || [],
                         meta: response.data.data.meta || { total: 0, page: 1, limit: 10, totalPages: 1 }
                     };                    return result;
                 }
-                // Nếu cấu trúc là { data: [...], meta: {...} }
                 else if (Array.isArray(response.data.data)) {
                     const result = {
                         data: response.data.data || [],
@@ -59,11 +56,12 @@ export const ProductApiService = {
     async getProductById(id: number) {
         try {
             const response = await http.get<any>(`/product/${id}`);
-            if (response.data && response.data.data) {
-                const product = response.data.data;
 
-                return product;
+            if (response && response.data) {
+                return response.data;
             }
+
+            console.error(`Product ${id} not found in response`);
             return null;
         } catch (error) {
             console.error(`Error fetching product ${id}:`, error);
@@ -86,8 +84,6 @@ export const ProductApiService = {
 
     async createProduct(formData: FormData) {
         try {
-            // Log FormData contents for debugging            // Can't iterate through FormData entries in this environment
-            // Just log that we're sending the FormData
             const response = await multipartHttp.post<any>('/product', formData);
             if (response.data && response.data.data) {
                 return response.data.data;

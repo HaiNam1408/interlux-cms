@@ -53,7 +53,7 @@ axiosInstance.interceptors.request.use(
 );
 
 const request = async <Response>(
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
     url: string,
     options?: CustomOptions
 ): Promise<Response> => {
@@ -116,6 +116,14 @@ const http = {
         options?: Omit<CustomOptions, "body">
     ) {
         return request<Response>("DELETE", url, { ...options, data: body });
+    },
+
+    patch<Response>(
+        url: string,
+        body?: any,
+        options?: Omit<CustomOptions, "body">
+    ) {
+        return request<Response>("PATCH", url, { ...options, data: body });
     },
 };
 
