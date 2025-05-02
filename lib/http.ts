@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } f
 
 type CustomOptions = AxiosRequestConfig & {
     baseUrl?: string;
+    isMultipart?: boolean;
 };
 
 export class HttpError extends Error {
@@ -66,12 +67,23 @@ const request = async <Response>(
         : `${baseUrl}/${url}`;
 
     try {
-        const response: AxiosResponse<Response> = await axiosInstance({
+        // Create request config
+        const requestConfig: AxiosRequestConfig = {
             ...options,
             url: fullUrl,
             method,
             data: options?.data,
-        });
+        };
+
+        // Set Content-Type header for multipart/form-data if needed
+        if (options?.isMultipart) {
+            requestConfig.headers = {
+                ...requestConfig.headers,
+                'Content-Type': 'multipart/form-data'
+            };
+        }
+
+        const response: AxiosResponse<Response> = await axiosInstance(requestConfig);
 
         return response.data;
     } catch (error) {
@@ -99,7 +111,13 @@ const http = {
         body: any,
         options?: Omit<CustomOptions, "body">
     ) {
-        return request<Response>("POST", url, { ...options, data: body });
+        // Check if body is FormData and set isMultipart flag
+        const isMultipart = body instanceof FormData;
+        return request<Response>("POST", url, {
+            ...options,
+            data: body,
+            isMultipart
+        });
     },
 
     put<Response>(
@@ -107,7 +125,13 @@ const http = {
         body?: any,
         options?: Omit<CustomOptions, "body">
     ) {
-        return request<Response>("PUT", url, { ...options, data: body });
+        // Check if body is FormData and set isMultipart flag
+        const isMultipart = body instanceof FormData;
+        return request<Response>("PUT", url, {
+            ...options,
+            data: body,
+            isMultipart
+        });
     },
 
     delete<Response>(
@@ -123,7 +147,13 @@ const http = {
         body?: any,
         options?: Omit<CustomOptions, "body">
     ) {
-        return request<Response>("PATCH", url, { ...options, data: body });
+        // Check if body is FormData and set isMultipart flag
+        const isMultipart = body instanceof FormData;
+        return request<Response>("PATCH", url, {
+            ...options,
+            data: body,
+            isMultipart
+        });
     },
 };
 

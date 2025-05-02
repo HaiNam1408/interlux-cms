@@ -7,16 +7,52 @@ export enum ProductStatus {
   OUTOFSTOCK = "OUTOFSTOCK"
 }
 
-export interface ProductVariation {
+export enum CommonStatus {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE"
+}
+
+export interface ProductAttribute {
   id: number;
-  name: string;
-  sku: string;
-  price: number;
-  stock: number;
   productId: number;
-  product?: Product;
+  name: string;
+  slug: string;
+  sort?: number;
+  status: CommonStatus;
   createdAt: string;
   updatedAt: string;
+  values?: ProductAttributeValue[];
+}
+
+export interface ProductAttributeValue {
+  id: number;
+  attributeId: number;
+  name: string;
+  slug: string;
+  value?: string;
+}
+
+export interface ProductVariation {
+  id: number;
+  productId: number;
+  sku: string;
+  price?: number;
+  percentOff?: number;
+  inventory: number;
+  images?: Array<{type: string, fileName: string, filePath: string}>;
+  isDefault: boolean;
+  status: CommonStatus;
+  createdAt: string;
+  updatedAt: string;
+  attributeValues?: ProductVariationValue[];
+}
+
+export interface ProductVariationValue {
+  id: number;
+  productVariationId: number;
+  attributeValueId: number;
+  name?: string;
+  attributeValue?: ProductAttributeValue;
 }
 
 export interface Product {
@@ -30,11 +66,12 @@ export interface Product {
   attributes?: Record<string, any>;
   categoryId: number;
   category?: Category;
-  images?: Array<{type: string, fileName: string, filePath: string}> | string[] | Record<string, any>;
+  images?: Array<{type: string, fileName: string, filePath: string}>;
   sort?: number;
   status: ProductStatus;
   createdAt: string;
   updatedAt: string;
+  productAttributes?: ProductAttribute[];
   variations?: ProductVariation[];
 }
 
@@ -46,7 +83,7 @@ export interface CreateProductDto {
   percentOff?: number;
   attributes?: Record<string, any>;
   categoryId: number;
-  images?: string[] | Record<string, any>;
+  images?: Array<{type: string, fileName: string, filePath: string}>;
   sort?: number;
   status?: ProductStatus;
 }
@@ -59,7 +96,8 @@ export interface UpdateProductDto {
   percentOff?: number;
   attributes?: Record<string, any>;
   categoryId?: number;
-  images?: string[] | Record<string, any>;
+  images?: Array<{type: string, fileName: string, filePath: string}>;
+  imagesToDelete?: Array<{fileName: string, url: string}>;
   sort?: number;
   status?: ProductStatus;
 }
@@ -74,4 +112,57 @@ export interface ProductQueryParams {
   maxPrice?: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+}
+
+export interface CreateProductAttributeDto {
+  name: string;
+  slug?: string;
+  sort?: number;
+  status?: CommonStatus;
+}
+
+export interface UpdateProductAttributeDto {
+  name?: string;
+  slug?: string;
+  sort?: number;
+  status?: CommonStatus;
+}
+
+export interface CreateProductAttributeValueDto {
+  name: string;
+  slug?: string;
+  value?: string;
+  sort?: number;
+  status?: CommonStatus;
+}
+
+export interface UpdateProductAttributeValueDto {
+  name?: string;
+  slug?: string;
+  value?: string;
+  sort?: number;
+  status?: CommonStatus;
+}
+
+export interface CreateProductVariationDto {
+  sku: string;
+  price?: number;
+  percentOff?: number;
+  inventory?: number;
+  images?: Array<{type: string, fileName: string, filePath: string}>;
+  isDefault?: boolean;
+  status?: CommonStatus;
+  attributeValueIds: number[];
+}
+
+export interface UpdateProductVariationDto {
+  sku?: string;
+  price?: number;
+  percentOff?: number;
+  inventory?: number;
+  images?: Array<{type: string, fileName: string, filePath: string}>;
+  imagesToDelete?: Array<{fileName: string, url: string}>;
+  isDefault?: boolean;
+  status?: CommonStatus;
+  attributeValueIds?: number[];
 }

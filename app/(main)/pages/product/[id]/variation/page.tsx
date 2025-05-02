@@ -4,10 +4,17 @@ import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
+import { FileUpload } from 'primereact/fileupload';
 import React, { useEffect, useRef, useState } from 'react';
 import { ProductApiService } from '@/demo/service/ProductApiService';
-import { VariationApiService, ProductVariation, Variation, VariationOption, VariationStatus } from '@/demo/service/VariationApiService';
-import { PaginatedData } from '@/types/response';
+import { ProductAttributeApiService } from '@/demo/service/ProductAttributeApiService';
+import { ProductVariationApiService } from '@/demo/service/ProductVariationApiService';
+import {
+    Product,
+    ProductAttribute,
+    ProductVariation,
+    CommonStatus
+} from '@/types/product';
 import { useParams, useRouter } from 'next/navigation';
 import './styles.css';
 import {
@@ -37,17 +44,16 @@ const ProductVariationPage = () => {
         inventory: 0,
         images: [],
         isDefault: false,
-        status: VariationStatus.ACTIVE,
+        status: CommonStatus.ACTIVE,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        options: []
+        attributeValues: []
     };
 
-    const [product, setProduct] = useState<any>(null);
-    const [variations, setVariations] = useState<Variation[]>([]);
-    const [variationOptions, setVariationOptions] = useState<Record<number, VariationOption[]>>({});
+    const [product, setProduct] = useState<Product | null>(null);
+    const [productAttributes, setProductAttributes] = useState<ProductAttribute[]>([]);
     const [productVariations, setProductVariations] = useState<ProductVariation[]>([]);
-    const [variationSidebar, setVariationSidebar] = useState(false);
+    const [variationDialog, setVariationDialog] = useState(false);
     const [deleteVariationDialog, setDeleteVariationDialog] = useState(false);
     const [deleteVariationsDialog, setDeleteVariationsDialog] = useState(false);
     const [productVariation, setProductVariation] = useState<ProductVariation>(emptyProductVariation);
@@ -56,7 +62,7 @@ const ProductVariationPage = () => {
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
-    const fileUploadRef = useRef<any>(null);
+    const fileUploadRef = useRef<FileUpload>(null);
 
     // Pagination state
     const [totalRecords, setTotalRecords] = useState(0);
@@ -68,7 +74,8 @@ const ProductVariationPage = () => {
 
     useEffect(() => {
         loadProduct();
-        loadVariations();
+        loadProductAttributes();
+        loadProductVariations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, rows]);
 
@@ -78,8 +85,6 @@ const ProductVariationPage = () => {
             const data = await ProductApiService.getProductById(productId);
             if (data) {
                 setProduct(data);
-                setProductVariations(data.variations || []);
-                setTotalRecords((data.variations || []).length);
             }
             setLoading(false);
         } catch (error) {
@@ -93,41 +98,72 @@ const ProductVariationPage = () => {
         }
     };
 
-    const loadVariations = async () => {
+    const loadProductAttributes = async () => {
         try {
-            const response = await VariationApiService.getVariations(1, 100);
+            setLoading(true);
+            console.log('Loading product attributes for product ID:', productId);
 
-            if (response) {
-                const variations = response.data || [];
-                setVariations(variations);
+            const response = await ProductAttributeApiService.getProductAttributes(productId);
 
-                const optionsPromises = variations.map((variation: Variation) =>
-                    VariationApiService.getVariationOptions(variation.id, 1, 100)
+            console.log('Product attributes response:', response);
+
+            if (response && response.data) {
+                const attributesWithValues = await Promise.all(
+                    response.data.map(async (attr) => {
+                        const valuesResponse = await ProductAttributeApiService.getAttributeValues(productId, attr.id);
+                        const values = valuesResponse ? valuesResponse.data : [];
+
+                        return {
+                            ...attr,
+                            values: values
+                        };
+                    })
                 );
-
-                const optionsResponses = await Promise.all(optionsPromises);
-
-                const optionsMap: Record<number, VariationOption[]> = {};
-
-                variations.forEach((variation: Variation, index: number) => {
-                    if (optionsResponses[index]) {
-                        const options = optionsResponses[index]?.data || [];
-                        optionsMap[variation.id] = options;
-                    }
-                });
-
-                setVariationOptions(optionsMap);
+                ;
+                setProductAttributes(attributesWithValues);
             } else {
-                console.warn("No response from getVariations API");
-                setVariations([]);
-                setVariationOptions({});
+                setProductAttributes([]);
             }
+
+            setLoading(false);
         } catch (error) {
-            console.error('Error loading variations:', error);
+            console.error('Error in loadProductAttributes:', error);
+            setLoading(false);
+            setProductAttributes([]);
             toast.current?.show({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'Failed to load variations',
+                detail: 'Failed to load product attributes',
+                life: 3000
+            });
+        }
+    };
+
+    const loadProductVariations = async () => {
+        try {
+            setLoading(true);
+            const response = await ProductVariationApiService.getProductVariations(productId);
+
+            console.log('Product variations response in page:', response);
+
+            if (response && response.data) {
+                setProductVariations(response.data);
+                setTotalRecords(response.data.length);
+            } else {
+                setProductVariations([]);
+                setTotalRecords(0);
+            }
+
+            setLoading(false);
+        } catch (error) {
+            console.error('Error in loadProductVariations:', error);
+            setLoading(false);
+            setProductVariations([]);
+            setTotalRecords(0);
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Failed to load product variations',
                 life: 3000
             });
         }
@@ -137,12 +173,12 @@ const ProductVariationPage = () => {
         setProductVariation(emptyProductVariation);
         setImagesToDelete([]);
         setSubmitted(false);
-        setVariationSidebar(true);
+        setVariationDialog(true);
     };
 
     const hideDialog = () => {
         setSubmitted(false);
-        setVariationSidebar(false);
+        setVariationDialog(false);
     };
 
     const hideDeleteVariationDialog = () => {
@@ -153,114 +189,191 @@ const ProductVariationPage = () => {
         setDeleteVariationsDialog(false);
     };
 
-    const saveProductVariation = () => {
+    const saveProductVariation = async () => {
         setSubmitted(true);
 
-        if (productVariation.sku.trim()) {
-            let _productVariation = { ...productVariation };
+        console.log('Saving product variation:', productVariation);
 
-            const formData = new FormData();
-            formData.append('sku', _productVariation.sku);
-            formData.append('price', (_productVariation.price || 0).toString());
-            formData.append('percentOff', (_productVariation.percentOff || 0).toString());
-            formData.append('inventory', _productVariation.inventory.toString());
-            formData.append('isDefault', _productVariation.isDefault.toString());
-            formData.append('status', _productVariation.status);
+        if (productVariation.sku && productVariation.sku.trim()) {
+            try {
+                let _productVariation = { ...productVariation };
+                console.log('Prepared product variation for saving:', _productVariation);
+                const formData = new FormData();
 
-            // Handle options
-            if (_productVariation.options && _productVariation.options.length > 0) {
-                console.log('Sending options:', _productVariation.options);
-                formData.append('options', JSON.stringify(_productVariation.options.map(opt => ({
-                    variationOptionId: opt.variationOptionId
-                }))));
-            }
+                formData.append('sku', _productVariation.sku || '');
 
-            // Handle images
-            if (fileUploadRef.current && fileUploadRef.current.getFiles().length > 0) {
-                const files = fileUploadRef.current.getFiles();
-                for (let i = 0; i < files.length; i++) {
-                    formData.append('images', files[i]);
+                // Safely handle price (could be undefined or null)
+                if (_productVariation.price !== undefined && _productVariation.price !== null) {
+                    formData.append('price', _productVariation.price.toString());
+                } else {
+                    formData.append('price', '0');
                 }
-            }
 
-            // Handle images to delete when updating
-            if (_productVariation.id && imagesToDelete.length > 0) {
-                console.log('Sending imagesToDelete:', imagesToDelete);
-                formData.append('imagesToDelete', JSON.stringify(imagesToDelete));
-            }
+                // Safely handle percentOff (could be undefined or null)
+                if (_productVariation.percentOff !== undefined && _productVariation.percentOff !== null) {
+                    formData.append('percentOff', _productVariation.percentOff.toString());
+                } else {
+                    formData.append('percentOff', '0');
+                }
 
-            if (_productVariation.id) {
-                // Update existing product variation
-                VariationApiService.updateProductVariation(productId, _productVariation.id, formData)
-                    .then(() => {
-                        toast.current?.show({
-                            severity: 'success',
-                            summary: 'Successful',
-                            detail: 'Product Variation Updated',
-                            life: 3000
-                        });
-                        loadProduct();
-                    })
-                    .catch((error) => {
-                        toast.current?.show({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: `Failed to update product variation: ${error.message}`,
-                            life: 3000
-                        });
+                // Safely handle inventory (could be undefined or null)
+                if (_productVariation.inventory !== undefined && _productVariation.inventory !== null) {
+                    formData.append('inventory', _productVariation.inventory.toString());
+                } else {
+                    formData.append('inventory', '0');
+                }
+
+                // Safely handle isDefault (could be undefined or null)
+                formData.append('isDefault', (_productVariation.isDefault === true).toString());
+
+                // Safely handle status (could be undefined or null)
+                formData.append('status', _productVariation.status || 'ACTIVE');
+
+                // Handle attribute values
+                if (_productVariation.attributeValues && _productVariation.attributeValues.length > 0) {
+                    _productVariation.attributeValues.forEach(av => {
+                        // Safely handle attributeValueId (could be undefined or null)
+                        if (av && av.attributeValueId !== undefined && av.attributeValueId !== null) {
+                            formData.append('attributeValues[]', av.attributeValueId.toString());
+                        }
                     });
-            } else {
-                // Create new product variation
-                VariationApiService.createProductVariation(productId, formData)
-                    .then(() => {
-                        toast.current?.show({
-                            severity: 'success',
-                            summary: 'Successful',
-                            detail: 'Product Variation Created',
-                            life: 3000
-                        });
-                        loadProduct();
-                    })
-                    .catch((error) => {
-                        console.error('Failed to create product variation:', error);
-                        toast.current?.show({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: `Failed to create product variation: ${error.message || 'Unknown error'}`,
-                            life: 3000
-                        });
-                    });
-            }
+                }
 
-            setVariationSidebar(false);
-            setProductVariation(emptyProductVariation);
-            if (fileUploadRef.current) {
-                fileUploadRef.current.clear();
+                // Handle images
+                if (fileUploadRef.current && fileUploadRef.current.getFiles().length > 0) {
+                    const files = fileUploadRef.current.getFiles();
+                    for (let i = 0; i < files.length; i++) {
+                        formData.append('images', files[i]);
+                    }
+                }
+
+                // Handle images to delete when updating
+                if (_productVariation.id && imagesToDelete.length > 0) {
+                    imagesToDelete.forEach((image, index) => {
+                        formData.append(`imagesToDelete[${index}][fileName]`, image.fileName);
+                        formData.append(`imagesToDelete[${index}][url]`, image.url);
+                    });
+                }
+
+                if (_productVariation.id) {
+                    // Update existing product variation
+                    await ProductVariationApiService.updateProductVariation(productId, _productVariation.id, formData);
+                    toast.current?.show({
+                        severity: 'success',
+                        summary: 'Successful',
+                        detail: 'Product Variation Updated',
+                        life: 3000
+                    });
+                } else {
+                    // Create new product variation
+                    await ProductVariationApiService.createProductVariation(productId, formData);
+                    toast.current?.show({
+                        severity: 'success',
+                        summary: 'Successful',
+                        detail: 'Product Variation Created',
+                        life: 3000
+                    });
+                }
+
+                setVariationDialog(false);
+                setProductVariation(emptyProductVariation);
+                if (fileUploadRef.current) {
+                    fileUploadRef.current.clear();
+                }
+                setImagesToDelete([]);
+                loadProductVariations();
+            } catch (error: any) {
+                console.error('Failed to save product variation:', error);
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: `Failed to save product variation: ${error.message || 'Unknown error'}`,
+                    life: 3000
+                });
             }
-            setImagesToDelete([]);
         }
     };
 
     const editProductVariation = async (variation: ProductVariation) => {
+        console.log('Editing variation:', variation);
         setImagesToDelete([]);
 
         if (variation.id) {
-            setVariationSidebar(true);
-
             try {
-                const fullVariation = await VariationApiService.getProductVariationById(productId, variation.id);
+                console.log('Fetching full variation data for ID:', variation.id);
+                const fullVariation = await ProductVariationApiService.getProductVariationById(productId, variation.id);
+
                 if (fullVariation) {
+                    console.log('Received full variation data:', fullVariation);
+
+                    // Ensure attributeValues is properly initialized
+                    if (!fullVariation.attributeValues) {
+                        console.log('attributeValues is missing, initializing empty array');
+                        fullVariation.attributeValues = [];
+                    } else {
+                        console.log('Variation has attributeValues:', fullVariation.attributeValues);
+                    }
+
+                    // If we don't have attributeValue objects with attributeId, try to find them
+                    if (fullVariation.attributeValues.length > 0 && productAttributes.length > 0) {
+                        console.log('Trying to enhance attributeValues with attributeValue objects');
+
+                        fullVariation.attributeValues = fullVariation.attributeValues.map(av => {
+                            // If we already have attributeValue with attributeId, keep it
+                            if (av.attributeValue && av.attributeValue.attributeId) {
+                                return av;
+                            }
+
+                            // Try to find the attribute this value belongs to
+                            for (const attr of productAttributes) {
+                                if (attr.values) {
+                                    const matchingValue = attr.values.find(val => val.id === av.attributeValueId);
+                                    if (matchingValue) {
+                                        console.log(`Found matching attribute (${attr.id}) for value ${av.attributeValueId}`);
+                                        return {
+                                            ...av,
+                                            attributeValue: {
+                                                ...matchingValue,
+                                                attributeId: attr.id
+                                            }
+                                        };
+                                    }
+                                }
+                            }
+                            return av;
+                        });
+                    }
+
                     setProductVariation(fullVariation);
                 } else {
-                    setProductVariation({ ...variation });
+                    console.warn('No full variation data received, using row data');
+                    // Make sure we have an attributeValues array
+                    const variationWithDefaults = {
+                        ...variation,
+                        attributeValues: variation.attributeValues || []
+                    };
+                    setProductVariation(variationWithDefaults);
                 }
             } catch (error) {
                 console.error('Error fetching full product variation data:', error);
-                setProductVariation({ ...variation });
+                // Make sure we have an attributeValues array
+                const variationWithDefaults = {
+                    ...variation,
+                    attributeValues: variation.attributeValues || []
+                };
+                setProductVariation(variationWithDefaults);
             }
+
+            // Set dialog visible after data is prepared
+            setVariationDialog(true);
         } else {
-            setProductVariation({ ...variation });
-            setVariationSidebar(true);
+            // Make sure we have an attributeValues array for new variations too
+            const variationWithDefaults = {
+                ...variation,
+                attributeValues: []
+            };
+            setProductVariation(variationWithDefaults);
+            setVariationDialog(true);
         }
     };
 
@@ -269,27 +382,26 @@ const ProductVariationPage = () => {
         setDeleteVariationDialog(true);
     };
 
-    const deleteVariation = () => {
-        VariationApiService.deleteProductVariation(productId, productVariation.id)
-            .then(() => {
-                setDeleteVariationDialog(false);
-                setProductVariation(emptyProductVariation);
-                toast.current?.show({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Product Variation Deleted',
-                    life: 3000
-                });
-                loadProduct();
-            })
-            .catch((error) => {
-                toast.current?.show({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: `Failed to delete product variation: ${error.message}`,
-                    life: 3000
-                });
+    const deleteVariation = async () => {
+        try {
+            await ProductVariationApiService.deleteProductVariation(productId, productVariation.id);
+            setDeleteVariationDialog(false);
+            setProductVariation(emptyProductVariation);
+            toast.current?.show({
+                severity: 'success',
+                summary: 'Successful',
+                detail: 'Product Variation Deleted',
+                life: 3000
             });
+            loadProductVariations();
+        } catch (error: any) {
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: `Failed to delete product variation: ${error.message || 'Unknown error'}`,
+                life: 3000
+            });
+        }
     };
 
     const exportCSV = () => {
@@ -300,33 +412,33 @@ const ProductVariationPage = () => {
         setDeleteVariationsDialog(true);
     };
 
-    const deleteSelectedVariations = () => {
+    const deleteSelectedVariations = async () => {
         if (!selectedVariations || selectedVariations.length === 0) return;
 
-        const deletePromises = selectedVariations.map((variation) =>
-            VariationApiService.deleteProductVariation(productId, variation.id)
-        );
+        try {
+            const deletePromises = selectedVariations.map((variation) =>
+                ProductVariationApiService.deleteProductVariation(productId, variation.id)
+            );
 
-        Promise.all(deletePromises)
-            .then(() => {
-                loadProduct();
-                setDeleteVariationsDialog(false);
-                setSelectedVariations([]);
-                toast.current?.show({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Product Variations Deleted',
-                    life: 3000
-                });
-            })
-            .catch((error) => {
-                toast.current?.show({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: `Failed to delete product variations: ${error.message}`,
-                    life: 3000
-                });
+            await Promise.all(deletePromises);
+
+            loadProductVariations();
+            setDeleteVariationsDialog(false);
+            setSelectedVariations([]);
+            toast.current?.show({
+                severity: 'success',
+                summary: 'Successful',
+                detail: 'Product Variations Deleted',
+                life: 3000
             });
+        } catch (error: any) {
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: `Failed to delete product variations: ${error.message || 'Unknown error'}`,
+                life: 3000
+            });
+        }
     };
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string) => {
@@ -345,7 +457,7 @@ const ProductVariationPage = () => {
 
     const onStatusChange = (e: any) => {
         let _variation = { ...productVariation };
-        _variation.status = e.value as VariationStatus;
+        _variation.status = e.value as CommonStatus;
         setProductVariation(_variation);
     };
 
@@ -355,34 +467,151 @@ const ProductVariationPage = () => {
         setProductVariation(_variation);
     };
 
-    const onOptionsChange = (selectedOptions: { variationOptionId: number }[]) => {
+    const onAttributeValueChange = (attributeId: number, valueId: number) => {
+        console.log(`VariationPage - Changing attribute ${attributeId} to value ${valueId}`);
+        console.log('Current productVariation:', productVariation);
+
         let _variation = { ...productVariation };
-        // Convert to ProductVariationOption type
-        _variation.options = selectedOptions.map(opt => ({
-            id: 0,
-            productVariationId: productVariation.id,
-            variationOptionId: opt.variationOptionId
-        }));
+
+        // If attributeValues doesn't exist, initialize it
+        if (!_variation.attributeValues) {
+            console.log('Initializing empty attributeValues array');
+            _variation.attributeValues = [];
+        }
+
+        // Ensure productAttributes is defined and has values
+        if (!productAttributes || productAttributes.length === 0) {
+            console.warn('productAttributes is empty or undefined');
+            // Still add the value even without the full attribute info
+            _variation.attributeValues.push({
+                id: 0,
+                productVariationId: _variation.id || 0,
+                attributeValueId: valueId
+            });
+            setProductVariation(_variation);
+            return;
+        }
+
+        // Find the attribute value in the productAttributes to get its details
+        const attribute = productAttributes.find(attr => attr.id === attributeId);
+        const attributeValue = attribute?.values?.find(val => val.id === valueId);
+
+        if (attributeValue) {
+            console.log('Found attribute value in productAttributes:', attributeValue);
+        } else {
+            console.warn(`Could not find attribute value for attributeId=${attributeId}, valueId=${valueId}`);
+        }
+
+        // Find if we already have a value for this attribute
+        // We need to check both ways: by attributeValue.attributeId and by matching attributeValueId to values in productAttributes
+        const existingIndex = _variation.attributeValues.findIndex(av => {
+            if (!av) return false;
+
+            // Check if we have the attributeValue object with attributeId
+            if (av.attributeValue && av.attributeValue.attributeId === attributeId) {
+                return true;
+            }
+
+            // If not, try to find a match by checking if this value belongs to the current attribute
+            // by looking through productAttributes
+            for (const attr of productAttributes) {
+                if (attr.id === attributeId) {
+                    // This is the attribute we're looking for
+                    // Check if the current attributeValue belongs to this attribute
+                    if (attr.values) {
+                        const matchingValue = attr.values.find(val => val.id === av.attributeValueId);
+                        if (matchingValue) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        });
+
+        console.log('Existing index for attribute:', existingIndex);
+
+        if (existingIndex >= 0) {
+            // Update existing value
+            console.log('Updating existing attribute value');
+            _variation.attributeValues[existingIndex].attributeValueId = valueId;
+
+            // Also update the attributeValue object if it exists
+            if (_variation.attributeValues[existingIndex].attributeValue) {
+                if (attributeValue) {
+                    _variation.attributeValues[existingIndex].attributeValue = {
+                        ...attributeValue,
+                        attributeId: attributeId,
+                        id: attributeValue.id || 0
+                    };
+                }
+            } else {
+                // Create attributeValue object if it doesn't exist
+                if (attributeValue) {
+                    _variation.attributeValues[existingIndex].attributeValue = {
+                        ...attributeValue,
+                        attributeId: attributeId,
+                        id: attributeValue.id || 0
+                    };
+                }
+            }
+        } else {
+            // Add new value
+            console.log('Adding new attribute value');
+            if (attributeValue) {
+                _variation.attributeValues.push({
+                    id: 0,
+                    productVariationId: _variation.id || 0,
+                    attributeValueId: valueId,
+                    attributeValue: {
+                        ...attributeValue,
+                        attributeId: attributeId,
+                        id: attributeValue.id || 0
+                    }
+                });
+            } else {
+                _variation.attributeValues.push({
+                    id: 0,
+                    productVariationId: _variation.id || 0,
+                    attributeValueId: valueId
+                });
+            }
+        }
+
+        console.log('Updated variation attributeValues:', _variation.attributeValues);
         setProductVariation(_variation);
     };
 
     const handleImageDelete = (image: {fileName: string, url: string}) => {
+        if (!image) {
+            console.warn('Attempted to delete undefined image');
+            return;
+        }
+
         setImagesToDelete([...imagesToDelete, image]);
 
         console.log('Adding image to delete:', image);
         console.log('Updated imagesToDelete:', [...imagesToDelete, image]);
 
         let _variation = { ...productVariation };
-        if (Array.isArray(_variation.images)) {
+        if (_variation.images && Array.isArray(_variation.images)) {
             _variation.images = _variation.images.filter(img => {
+                if (!img) return false;
+
                 if (typeof img === 'string') {
                     return img !== image.url;
-                } else if (img && typeof img === 'object') {
+                } else if (typeof img === 'object') {
                     const imgPath = img.filePath || (img as any).url || '';
                     return imgPath !== image.url;
                 }
                 return true;
             });
+            setProductVariation(_variation);
+        } else {
+            console.warn('Product variation images is not an array:', _variation.images);
+            // Initialize images array if it doesn't exist
+            _variation.images = [];
             setProductVariation(_variation);
         }
     };
@@ -395,8 +624,8 @@ const ProductVariationPage = () => {
     };
 
     const statusOptions = [
-        { label: 'ACTIVE', value: VariationStatus.ACTIVE },
-        { label: 'INACTIVE', value: VariationStatus.INACTIVE }
+        { label: 'Active', value: CommonStatus.ACTIVE },
+        { label: 'Inactive', value: CommonStatus.INACTIVE }
     ];
 
     return (
@@ -406,7 +635,7 @@ const ProductVariationPage = () => {
                     <Toast ref={toast} />
                     <div className="flex justify-content-between align-items-center mb-4">
                         <h3>
-                            {product ? `Variations for Product: ${product.title}` : 'Loading product information...'}
+                            {product ? `Product Management: ${product.title}` : 'Loading product information...'}
                         </h3>
                         <Button
                             label="Back to Products"
@@ -447,21 +676,22 @@ const ProductVariationPage = () => {
                     />
 
                     <ProductVariationForm
-                        visible={variationSidebar}
+                        visible={variationDialog}
                         onHide={hideDialog}
                         productVariation={productVariation}
                         submitted={submitted}
                         statusOptions={statusOptions}
-                        variations={variations}
-                        variationOptions={variationOptions}
+                        productAttributes={productAttributes}
                         onSave={saveProductVariation}
                         onInputChange={onInputChange}
                         onInputNumberChange={onInputNumberChange}
                         onStatusChange={onStatusChange}
                         onDefaultChange={onDefaultChange}
-                        onOptionsChange={onOptionsChange}
+                        onAttributeValueChange={onAttributeValueChange}
                         onImageDelete={handleImageDelete}
                         fileUploadRef={fileUploadRef}
+                        onAttributesChange={loadProductAttributes}
+                        product={product}
                     />
 
                     <DeleteProductVariationDialog

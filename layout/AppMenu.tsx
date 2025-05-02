@@ -31,11 +31,6 @@ const AppMenu = () => {
                             label: 'Products',
                             icon: 'pi pi-fw pi-box',
                             to: '/pages/product'
-                        },
-                        {
-                            label: 'Variations',
-                            icon: 'pi pi-fw pi-th-large',
-                            to: '/pages/variation'
                         }
                     ]
                 },

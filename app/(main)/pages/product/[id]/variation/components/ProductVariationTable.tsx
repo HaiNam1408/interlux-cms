@@ -3,7 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { ProductVariation } from '@/demo/service/VariationApiService';
+import { ProductVariation } from '@/types/product';
 
 interface ProductVariationTableProps {
     productVariations: ProductVariation[];
@@ -36,8 +36,7 @@ const ProductVariationTable = (props: ProductVariationTableProps) => {
         setGlobalFilter,
         onEdit,
         onDelete,
-        dt,
-        exportCSV
+        dt
     } = props;
 
     const header = (
@@ -93,18 +92,28 @@ const ProductVariationTable = (props: ProductVariationTableProps) => {
         return rowData.isDefault ? 'Yes' : 'No';
     };
 
-    const optionsBodyTemplate = (rowData: ProductVariation) => {
-        if (!rowData.options || rowData.options.length === 0) {
-            return <span>No options</span>;
+    const attributeValuesBodyTemplate = (rowData: ProductVariation) => {
+        // Handle case where attributeValues is missing or empty
+        if (!rowData.attributeValues || rowData.attributeValues.length === 0) {
+            return <span>No values</span>;
         }
+
+        // Find attribute values that have attributeValueId but no attributeValue object
+        const incompleteValues = rowData.attributeValues.filter(
+            value => !value.attributeValue && value.attributeValueId
+        );
 
         return (
             <div className="flex flex-wrap gap-1">
-                {rowData.options.map((option, index) => (
-                    <span key={index} className="product-option-badge">
-                        {option.variationOption?.name || `Option ${option.variationOptionId}`}
-                    </span>
-                ))}
+                {rowData.attributeValues.map((value) => {
+                    let displayName = value.name || 'Unknown';
+
+                    return (
+                        <span key={value.id} className="product-option-badge">
+                            {displayName}
+                        </span>
+                    );
+                })}
             </div>
         );
     };
@@ -125,7 +134,7 @@ const ProductVariationTable = (props: ProductVariationTableProps) => {
             globalFilter={globalFilter}
             emptyMessage="No product variations found."
             header={header}
-            responsiveLayout="scroll"
+            tableStyle={{ minWidth: '50rem' }}
             loading={loading}
             totalRecords={totalRecords}
             lazy
@@ -138,7 +147,7 @@ const ProductVariationTable = (props: ProductVariationTableProps) => {
             <Column field="price" header="Price" body={priceBodyTemplate} sortable headerStyle={{ minWidth: '8rem' }}></Column>
             <Column field="inventory" header="Inventory" sortable headerStyle={{ minWidth: '8rem' }}></Column>
             <Column field="isDefault" header="Default" body={defaultBodyTemplate} sortable headerStyle={{ minWidth: '8rem' }}></Column>
-            <Column field="options" header="Options" body={optionsBodyTemplate} headerStyle={{ minWidth: '14rem' }}></Column>
+            <Column field="attributeValues" header="Attribute Values" body={attributeValuesBodyTemplate} headerStyle={{ minWidth: '14rem' }}></Column>
             <Column field="status" header="Status" body={statusBodyTemplate} sortable headerStyle={{ minWidth: '8rem' }}></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
         </DataTable>

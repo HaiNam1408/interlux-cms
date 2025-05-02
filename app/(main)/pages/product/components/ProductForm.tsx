@@ -11,6 +11,7 @@ import { Product } from '@/types/product';
 import { Category } from '@/types/category';
 import ProductImageList from './ProductImageList';
 import AttributeEditor from './AttributeEditor';
+import { useRouter } from 'next/navigation';
 import 'quill/dist/quill.snow.css';
 
 interface ProductFormProps {
@@ -50,10 +51,23 @@ const ProductForm = (props: ProductFormProps) => {
         fileUploadRef
     } = props;
 
+    const router = useRouter();
     const editorRef = useRef<any>(null);
 
+    const navigateToAttributes = () => {
+        if (product.id) {
+            router.push(`/pages/product/${product.id}/attribute`);
+        }
+    };
+
+    const navigateToVariations = () => {
+        if (product.id) {
+            router.push(`/pages/product/${product.id}/variation`);
+        }
+    };
+
     return (
-        <Sidebar visible={visible} onHide={onHide} fullScreen className="p-sidebar-lg">
+        <Sidebar visible={visible} onHide={onHide} fullScreen>
             <div className="p-fluid">
                 <div className="flex justify-content-between align-items-center mb-4">
                     <h2 className="m-0">{product.id ? 'Edit Product' : 'New Product'}</h2>

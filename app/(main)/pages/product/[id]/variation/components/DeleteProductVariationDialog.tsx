@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
-import { ProductVariation } from '@/demo/service/VariationApiService';
+import { ProductVariation } from '@/types/product';
 
 interface DeleteProductVariationDialogProps {
     visible: boolean;

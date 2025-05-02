@@ -1,25 +1,6 @@
 import http from '@/lib/http';
-import axios from 'axios';
-import { PaginatedData, PaginationResponse, SingleResponse } from '@/types/response';
+import { PaginatedData } from '@/types/response';
 import { Product, ProductQueryParams, ProductStatus } from '@/types/product';
-
-// Create a custom axios instance for multipart/form-data requests
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
-const multipartHttp = axios.create({
-    baseURL: apiUrl,
-    headers: {
-        'Content-Type': 'multipart/form-data'
-    }
-});
-
-// Add auth token to requests
-multipartHttp.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
 
 export const ProductApiService = {
     async getProducts(page: number = 1, limit: number = 10, params?: Omit<ProductQueryParams, 'page' | 'limit'>): Promise<PaginatedData<Product> | null> {
@@ -84,7 +65,7 @@ export const ProductApiService = {
 
     async createProduct(formData: FormData) {
         try {
-            const response = await multipartHttp.post<any>('/product', formData);
+            const response = await http.post<any>('/product', formData);
             if (response.data && response.data.data) {
                 return response.data.data;
             }
@@ -98,7 +79,7 @@ export const ProductApiService = {
 
     async updateProduct(id: number, formData: FormData) {
         try {
-            const response = await multipartHttp.put<any>(`/product/${id}`, formData);
+            const response = await http.put<any>(`/product/${id}`, formData);
             if (response.data && response.data.data) {
                 return response.data.data;
             }
@@ -121,7 +102,7 @@ export const ProductApiService = {
 
     async updateProductStatus(id: number, status: ProductStatus) {
         try {
-            const response = await axios.patch<any>(`${apiUrl}/product/${id}/status`, { status });
+            const response = await http.patch<any>(`/product/${id}/status`, { status });
             if (response.data && response.data.data) {
                 return response.data.data;
             }
