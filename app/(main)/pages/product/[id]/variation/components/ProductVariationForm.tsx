@@ -1,13 +1,13 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { Checkbox } from 'primereact/checkbox';
+import { RadioButton } from 'primereact/radiobutton';
 import { classNames } from 'primereact/utils';
 import { FileUpload } from 'primereact/fileupload';
-import { MultiSelect } from 'primereact/multiselect';
 import { ProductVariation, Variation, VariationOption } from '@/demo/service/VariationApiService';
 
 interface ProductVariationFormProps {
@@ -20,9 +20,9 @@ interface ProductVariationFormProps {
     variationOptions: Record<number, VariationOption[]>;
     onSave: () => void;
     onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string) => void;
-    onInputNumberChange: (e: { value: number | null }, name: string) => void;
-    onStatusChange: (e: { value: string }) => void;
-    onDefaultChange: (e: { checked: boolean }) => void;
+    onInputNumberChange: (e: any, name: string) => void;
+    onStatusChange: (e: any) => void;
+    onDefaultChange: (e: any) => void;
     onOptionsChange: (selectedOptions: { variationOptionId: number }[]) => void;
     onImageDelete: (image: {fileName: string, url: string}) => void;
     fileUploadRef: React.RefObject<FileUpload>;
@@ -46,29 +46,50 @@ const ProductVariationForm = (props: ProductVariationFormProps) => {
         fileUploadRef
     } = props;
 
-    // Group options by variation
-    const groupedOptions = variations.map((variation, i) => {
-        return {
-            label: variation.name,
-            items: variation.options.map((option) => ({
-                variationOptionId: option.id,
-                label: option.name,
-                value: option.id
-            }))
-        };
-    }).filter(group => group.items.length > 0);
+    // Create a state to track selected option for each variation
+    const [selectedOptions, setSelectedOptions] = useState<Record<number, number>>({});
 
-    const hasOptions = groupedOptions.length > 0;
-    const selectedOptionIds = productVariation.options?.map(opt => opt.variationOptionId) || [];
+    // Initialize selected options from productVariation
+    useEffect(() => {
+        const initialSelectedOptions: Record<number, number> = {};
+
+        if (productVariation.options && productVariation.options.length > 0) {
+            // For each option in the product variation
+            productVariation.options.forEach(opt => {
+                // Find the variation option to get its variation ID
+                for (const variation of variations) {
+                    const foundOption = variation.options.find(o => o.id === opt.variationOptionId);
+                    if (foundOption) {
+                        // Store the selected option ID for this variation
+                        initialSelectedOptions[variation.id] = opt.variationOptionId;
+                        break;
+                    }
+                }
+            });
+        }
+
+        setSelectedOptions(initialSelectedOptions);
+    }, [productVariation.options, variations]);
+
+    // Check if we have any variations with options
+    const hasOptions = variations.length > 0 && variations.some(v => v.options && v.options.length > 0);
 
     // Handle option selection
-    const handleOptionChange = (e: any) => {
-        console.log('MultiSelect onChange event:', e);
-        const selectedOptions = e.value.map((optionId: number) => ({
-            variationOptionId: optionId
+    const handleOptionChange = (variationId: number, optionId: number) => {
+        // Update the selected option for this variation
+        const newSelectedOptions = { ...selectedOptions, [variationId]: optionId };
+        setSelectedOptions(newSelectedOptions);
+
+        // Convert to array of options for the API
+        const optionsArray = Object.entries(newSelectedOptions).map(([_, optionId]) => ({
+            variationOptionId: Number(optionId)
         }));
-        console.log('Processed selectedOptions:', selectedOptions);
-        onOptionsChange(selectedOptions);
+
+        console.log('Selected options:', newSelectedOptions);
+        console.log('Options array for API:', optionsArray);
+
+        // Update the product variation
+        onOptionsChange(optionsArray);
     };
 
     // Format images for display
@@ -135,26 +156,43 @@ const ProductVariationForm = (props: ProductVariationFormProps) => {
                 </div>
 
                 <div className="field col-12">
-                    <label htmlFor="options">Variation Options</label>
+                    <label>Variation Options</label>
                     {hasOptions ? (
-                        <>
-                            <MultiSelect
-                                id="options"
-                                value={selectedOptionIds}
-                                options={groupedOptions}
-                                onChange={handleOptionChange}
-                                optionLabel="label"
-                                optionGroupLabel="label"
-                                optionGroupChildren="items"
-                                placeholder="Select Variation Options"
-                                display="chip"
-                                className={classNames({ 'p-invalid': submitted && (!productVariation.options || productVariation.options.length === 0) })}
-                                filter
-                                showClear
-                                resetFilterOnHide
-                            />
-                            {submitted && (!productVariation.options || productVariation.options.length === 0) && <small className="p-error">At least one variation option is required.</small>}
-                        </>
+                        <div className={classNames('p-fluid', { 'p-invalid': submitted && Object.keys(selectedOptions).length === 0 })}>
+                            {variations.map(variation => {
+                                // Only render if variation has options
+                                if (variation.options && variation.options.length > 0) {
+                                    return (
+                                        <div key={variation.id} className="field mb-4">
+                                            <h5>{variation.name}</h5>
+                                            <div className="grid">
+                                                {variation.options.map(option => (
+                                                    <div key={option.id} className="col-12 md:col-4 mb-2">
+                                                        <div className="field-radiobutton">
+                                                            <RadioButton
+                                                                inputId={`option_${option.id}`}
+                                                                name={`variation_${variation.id}`}
+                                                                value={option.id}
+                                                                onChange={() => handleOptionChange(variation.id, option.id)}
+                                                                checked={selectedOptions[variation.id] === option.id}
+                                                            />
+                                                            <label htmlFor={`option_${option.id}`} className="ml-2">
+                                                                {option.name}
+                                                                {option.value && <span className="text-500 ml-1">({option.value})</span>}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })}
+                            {submitted && Object.keys(selectedOptions).length === 0 && (
+                                <small className="p-error">Please select at least one option for each variation.</small>
+                            )}
+                        </div>
                     ) : (
                         <div className="p-3 border-1 border-yellow-500 bg-yellow-50 text-yellow-700 border-round mb-3">
                             <i className="pi pi-exclamation-triangle mr-2"></i>
