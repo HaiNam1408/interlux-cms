@@ -58,7 +58,7 @@ const AppMenu = () => {
                 {
                     label: 'Customers',
                     icon: 'pi pi-fw pi-users',
-                    to: '/pages/crud'
+                    to: '/pages/customer'
                 },
                 {
                     label: 'Inventory',
