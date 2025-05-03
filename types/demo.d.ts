@@ -227,6 +227,11 @@ declare namespace Demo {
         parentId?: number | null;
         parent?: Category;
         children?: Category[];
+        image?: {
+            type: string;
+            fileName: string;
+            filePath: string;
+        };
         createdAt: string;
         updatedAt: string;
     };

@@ -33,9 +33,34 @@ export const CategoryService = {
         }
     },
 
-    async createCategory(category: Omit<Category, 'id' | 'createdAt' | 'updatedAt' | 'slug' | 'children'>) {
+    async createCategory(category: {
+        name: string;
+        slug?: string;
+        sort?: number;
+        parentId?: number | null;
+        image?: File;
+    }) {
         try {
-            const response = await http.post<Category>('/category', category);
+            const formData = new FormData();
+            formData.append('name', category.name);
+
+            if (category.slug) {
+                formData.append('slug', category.slug);
+            }
+
+            if (category.sort !== undefined) {
+                formData.append('sort', category.sort.toString());
+            }
+
+            if (category.parentId !== undefined && category.parentId !== null) {
+                formData.append('parentId', category.parentId.toString());
+            }
+
+            if (category.image) {
+                formData.append('image', category.image);
+            }
+
+            const response = await http.post<Category>('/category', formData);
             return response;
         } catch (error) {
             console.error('Error creating category:', error);
@@ -46,7 +71,37 @@ export const CategoryService = {
     async updateCategory(id: number, category: any) {
         try {
             delete category.children;
-            const response = await http.put<Category>(`/category/${id}`, category);
+
+            const formData = new FormData();
+
+            if (category.name) {
+                formData.append('name', category.name);
+            }
+
+            if (category.slug) {
+                formData.append('slug', category.slug);
+            }
+
+            if (category.sort !== undefined) {
+                formData.append('sort', category.sort.toString());
+            }
+
+            if (category.parentId !== undefined) {
+                if (category.parentId === null) {
+                    formData.append('parentId', '');
+                } else {
+                    formData.append('parentId', category.parentId.toString());
+                }
+            }
+
+            // Handle image upload
+            if (category.image instanceof File) {
+                formData.append('image', category.image);
+            } else if (category.image === '') {
+                formData.append('image', '');
+            }
+
+            const response = await http.put<Category>(`/category/${id}`, formData);
             return response;
         } catch (error) {
             console.error(`Error updating category ${id}:`, error);

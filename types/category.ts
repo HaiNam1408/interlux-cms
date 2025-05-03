@@ -6,6 +6,11 @@ export interface Category {
     parentId?: number | null;
     parent?: Category;
     children?: Category[];
+    image?: {
+        type: string;
+        fileName: string;
+        filePath: string;
+    };
     createdAt: string;
     updatedAt: string;
 }
@@ -15,6 +20,7 @@ export interface CreateCategoryDto {
     slug?: string;
     sort?: number;
     parentId?: number | null;
+    image?: File;
 }
 
 export interface UpdateCategoryDto {
@@ -22,6 +28,8 @@ export interface UpdateCategoryDto {
     slug?: string;
     sort?: number;
     parentId?: number | null;
+    image?: File | string;
+    imageToDelete?: boolean;
 }
 
 export interface CategoryQueryParams {
