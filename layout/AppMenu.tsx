@@ -41,17 +41,17 @@ const AppMenu = () => {
                         {
                             label: 'All Orders',
                             icon: 'pi pi-fw pi-shopping-cart',
-                            to: '/pages/crud'
+                            to: '/pages/empty'
                         },
                         {
                             label: 'Returns',
                             icon: 'pi pi-fw pi-replay',
-                            to: '/pages/crud'
+                            to: '/pages/empty'
                         },
                         {
                             label: 'Refunds',
                             icon: 'pi pi-fw pi-dollar',
-                            to: '/pages/crud'
+                            to: '/pages/empty'
                         }
                     ]
                 },
@@ -63,7 +63,7 @@ const AppMenu = () => {
                 {
                     label: 'Inventory',
                     icon: 'pi pi-fw pi-database',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 }
             ]
         },
@@ -73,12 +73,12 @@ const AppMenu = () => {
                 {
                     label: 'Coupon',
                     icon: 'pi pi-fw pi-ticket',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 },
                 {
                     label: 'Events',
                     icon: 'pi pi-fw pi-calendar',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 }
             ]
         },
@@ -88,17 +88,17 @@ const AppMenu = () => {
                 {
                     label: 'Navigation',
                     icon: 'pi pi-fw pi-align-left',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 },
                 {
                     label: 'Blog',
                     icon: 'pi pi-fw pi-file-o',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 },
                 {
                     label: 'Banners',
                     icon: 'pi pi-fw pi-image',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 }
             ]
         },
@@ -108,17 +108,17 @@ const AppMenu = () => {
                 {
                     label: 'Sales Overview',
                     icon: 'pi pi-fw pi-tag',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 },
                 {
                     label: 'Top Products',
                     icon: 'pi pi-fw pi-star-fill',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 },
                 {
                     label: 'Customer Insights',
                     icon: 'pi pi-fw pi-eye',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 }
             ]
         },
@@ -128,22 +128,22 @@ const AppMenu = () => {
                 {
                     label: 'Store Info',
                     icon: 'pi pi-fw pi-desktop',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 },
                 {
                     label: 'Payment & Shipping',
                     icon: 'pi pi-fw pi-id-card',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 },
                 {
                     label: 'Staff',
                     icon: 'pi pi-fw pi-user',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 },
                 {
                     label: 'Logout',
                     icon: 'pi pi-fw pi-sign-out',
-                    to: '/pages/crud'
+                    to: '/pages/empty'
                 }
             ]
         },
