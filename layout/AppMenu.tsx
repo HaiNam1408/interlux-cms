@@ -73,7 +73,7 @@ const AppMenu = () => {
                 {
                     label: 'Coupon',
                     icon: 'pi pi-fw pi-ticket',
-                    to: '/pages/empty'
+                    to: '/pages/coupon'
                 },
                 {
                     label: 'Events',
