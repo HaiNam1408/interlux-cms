@@ -41,17 +41,17 @@ const AppMenu = () => {
                         {
                             label: 'All Orders',
                             icon: 'pi pi-fw pi-shopping-cart',
-                            to: '/pages/empty'
+                            to: '/pages/order'
                         },
                         {
                             label: 'Returns',
                             icon: 'pi pi-fw pi-replay',
-                            to: '/pages/empty'
+                            to: '/pages/order/returns'
                         },
                         {
                             label: 'Refunds',
                             icon: 'pi pi-fw pi-dollar',
-                            to: '/pages/empty'
+                            to: '/pages/order/refunds'
                         }
                     ]
                 },
