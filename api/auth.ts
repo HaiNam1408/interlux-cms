@@ -1,4 +1,4 @@
-import http from '@/lib/http';
+import httpClient from '@/lib/httpClient';
 
 export interface LoginDto {
     email: string;
@@ -25,14 +25,10 @@ export interface UserProfile {
  */
 export const parseJwtToken = (token: string): UserProfile => {
     try {
-        // Decode the JWT payload (second part)
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const payload = JSON.parse(atob(base64));
 
-        console.log('JWT payload:', payload);
-
-        // Extract user information from payload
         return {
             id: payload.userId || payload.sub || payload.id || '',
             userId: payload.userId || '',
@@ -54,35 +50,25 @@ const authService = {
      */
     login: async (data: LoginDto): Promise<{ user: UserProfile; token: string }> => {
         try {
-            const response = await http.post<any>(
+            const response = await httpClient.post<any>(
                 "/auth/login",
                 data
             );
 
-            // Log the response for debugging
-            console.log('Login response:', response.data);
             if (!response.data || !response.data.accessToken) {
                 throw new Error('Invalid response format');
             }
 
             const { accessToken } = response.data;
-
-            // Parse the JWT token to get user information
             const user = parseJwtToken(accessToken);
-
-            // Store the token in localStorage
             localStorage.setItem('token', accessToken);
 
-            // Also store refresh token if available
             if (response.data.refreshToken) {
                 localStorage.setItem('refreshToken', response.data.refreshToken);
             }
 
             return { user, token: accessToken };
         } catch (error: any) {
-            console.error('Login error:', error);
-
-            // Rethrow with a more descriptive message
             if (error.response && error.response.data) {
                 throw new Error(error.response.data.message || 'Login failed');
             } else if (error.message) {
@@ -104,7 +90,6 @@ const authService = {
 
             return parseJwtToken(token);
         } catch (error) {
-            console.error('Error getting current user:', error);
             localStorage.removeItem('token');
             return null;
         }
