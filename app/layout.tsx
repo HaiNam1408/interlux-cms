@@ -1,6 +1,8 @@
 'use client';
 import { LayoutProvider } from '../layout/context/layoutcontext';
 import { PrimeReactProvider } from 'primereact/api';
+import { AuthProvider } from '@/context/AuthContext';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import 'primereact/resources/primereact.css';
 import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
@@ -19,7 +21,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </head>
             <body>
                 <PrimeReactProvider>
-                    <LayoutProvider>{children}</LayoutProvider>
+                    <AuthProvider>
+                        <LayoutProvider>
+                            <ProtectedRoute>
+                                {children}
+                            </ProtectedRoute>
+                        </LayoutProvider>
+                    </AuthProvider>
                 </PrimeReactProvider>
             </body>
         </html>
