@@ -17,15 +17,14 @@ export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
+                <meta name="apple-mobile-web-app-title" content="Interlux" />
                 <link id="theme-css" href={`/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>
             </head>
             <body>
                 <PrimeReactProvider>
                     <AuthProvider>
                         <LayoutProvider>
-                            <ProtectedRoute>
-                                {children}
-                            </ProtectedRoute>
+                            <ProtectedRoute>{children}</ProtectedRoute>
                         </LayoutProvider>
                     </AuthProvider>
                 </PrimeReactProvider>
