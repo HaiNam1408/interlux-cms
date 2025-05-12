@@ -33,6 +33,7 @@ const ProductPage = () => {
         attributes: {},
         categoryId: 0,
         images: [],
+        model: undefined,
         sort: 0,
         status: 'DRAFT' as ProductStatus,
         createdAt: new Date().toISOString(),
@@ -61,6 +62,9 @@ const ProductPage = () => {
 
     // Images to delete when updating - store objects with fileName and url
     const [imagesToDelete, setImagesToDelete] = useState<{fileName: string, url: string}[]>([]);
+
+    // Track if 3D model should be deleted when updating
+    const [removeModel, setRemoveModel] = useState<boolean>(false);
 
     useEffect(() => {
         loadProducts();
@@ -112,6 +116,7 @@ const ProductPage = () => {
     const hideDialog = () => {
         setSubmitted(false);
         setProductSidebar(false);
+        setRemoveModel(false);
     };
 
     const hideDeleteProductDialog = () => {
@@ -163,6 +168,17 @@ const ProductPage = () => {
                 formData.append('imagesToDelete', JSON.stringify(imagesToDelete));
             }
 
+            // Handle 3D model file if present in the form
+            const model3dFileInput = document.getElementById('model3d') as HTMLInputElement;
+            if (model3dFileInput && model3dFileInput.files && model3dFileInput.files.length > 0) {
+                formData.append('model3d', model3dFileInput.files[0]);
+            }
+
+            // Handle model deletion when updating
+            if (_product.id && removeModel) {
+                formData.append('removeModel', 'true');
+            }
+
             if (_product.id) {
                 // Update existing product
                 ProductApiService.updateProduct(_product.id, formData)
@@ -212,11 +228,13 @@ const ProductPage = () => {
                 fileUploadRef.current.clear();
             }
             setImagesToDelete([]);
+            setRemoveModel(false);
         }
     };
 
     const editProduct = (product: Product) => {
         setImagesToDelete([]);
+        setRemoveModel(false);
 
         if (product.id) {
             setProductSidebar(true);
@@ -372,6 +390,14 @@ const ProductPage = () => {
         }
     };
 
+    const handleDeleteModel = () => {
+        setRemoveModel(true);
+
+        let _product = { ...product };
+        _product.model = undefined;
+        setProduct(_product);
+    };
+
     // Handle pagination change
     const onPage = (event: any) => {
         setFirst(event.first);
@@ -436,6 +462,7 @@ const ProductPage = () => {
                         onCategoryChange={onCategoryChange}
                         onStatusChange={onStatusChange}
                         onImageDelete={handleImageDelete}
+                        onDeleteModel={handleDeleteModel}
                         fileUploadRef={fileUploadRef}
                     />
 

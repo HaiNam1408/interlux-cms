@@ -10,6 +10,7 @@ import { classNames } from 'primereact/utils';
 import { Product } from '@/types/product';
 import { Category } from '@/types/category';
 import ProductImageList from './ProductImageList';
+import ProductModelUpload from './ProductModelUpload';
 import AttributeEditor from './AttributeEditor';
 import { useRouter } from 'next/navigation';
 import 'quill/dist/quill.snow.css';
@@ -29,6 +30,7 @@ interface ProductFormProps {
     onCategoryChange: (e: { value: number }) => void;
     onStatusChange: (e: { value: string }) => void;
     onImageDelete: (image: { fileName: string, url: string }) => void;
+    onDeleteModel: () => void;
     fileUploadRef: React.RefObject<FileUpload>;
 }
 
@@ -48,6 +50,7 @@ const ProductForm = (props: ProductFormProps) => {
         onCategoryChange,
         onStatusChange,
         onImageDelete,
+        onDeleteModel,
         fileUploadRef
     } = props;
 
@@ -186,6 +189,13 @@ const ProductForm = (props: ProductFormProps) => {
                         </div>
 
                         <ProductImageList product={product} onImageDelete={onImageDelete} />
+
+                        <div className="field">
+                            <ProductModelUpload
+                                product={product}
+                                onDeleteModel={onDeleteModel}
+                            />
+                        </div>
                     </div>
                 </div>
                 <div className="flex justify-content-center my-3">

@@ -66,6 +66,7 @@ export interface Product {
   attributes?: Record<string, any>;
   categoryId: number;
   category?: Category;
+  model?: {type: string, fileName: string, filePath: string};
   images?: Array<{type: string, fileName: string, filePath: string}>;
   sort?: number;
   status: ProductStatus;
@@ -84,6 +85,7 @@ export interface CreateProductDto {
   attributes?: Record<string, any>;
   categoryId: number;
   images?: Array<{type: string, fileName: string, filePath: string}>;
+  model?: {type: string, fileName: string, filePath: string};
   sort?: number;
   status?: ProductStatus;
 }
@@ -98,6 +100,8 @@ export interface UpdateProductDto {
   categoryId?: number;
   images?: Array<{type: string, fileName: string, filePath: string}>;
   imagesToDelete?: Array<{fileName: string, url: string}>;
+  model?: {type: string, fileName: string, filePath: string};
+  removeModel?: boolean;
   sort?: number;
   status?: ProductStatus;
 }
