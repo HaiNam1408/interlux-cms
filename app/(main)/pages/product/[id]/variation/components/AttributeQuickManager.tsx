@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { ProductAttribute, ProductAttributeValue, CommonStatus } from '@/types/product';
-import { ProductAttributeApiService } from '@/demo/service/ProductAttributeApiService';
+import { ProductAttributeApiService } from '@/service/ProductAttributeApiService';
 import { Toast } from 'primereact/toast';
 
 interface AttributeQuickManagerProps {

@@ -4,7 +4,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { CustomerApiService } from '@/demo/service/CustomerApiService';
+import { CustomerApiService } from '@/service/CustomerApiService';
 import { Customer } from '@/types/customer';
 import { PaginatedData } from '@/types/response';
 import {

@@ -6,9 +6,9 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { FileUpload } from 'primereact/fileupload';
 import React, { useEffect, useRef, useState } from 'react';
-import { ProductApiService } from '@/demo/service/ProductApiService';
-import { ProductAttributeApiService } from '@/demo/service/ProductAttributeApiService';
-import { ProductVariationApiService } from '@/demo/service/ProductVariationApiService';
+import { ProductApiService } from '@/service/ProductApiService';
+import { ProductAttributeApiService } from '@/service/ProductAttributeApiService';
+import { ProductVariationApiService } from '@/service/ProductVariationApiService';
 import {
     Product,
     ProductAttribute,

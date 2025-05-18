@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import { Toast } from 'primereact/toast';
 import { Card } from 'primereact/card';
 import { Divider } from 'primereact/divider';
-import { OrderApiService } from '@/demo/service/OrderApiService';
+import { OrderApiService } from '@/service/OrderApiService';
 import { Order, UpdateOrderStatusDto } from '@/types/order';
 import { UpdateOrderStatusDialog, OrderStatusBadge } from '../components';
 import {

@@ -4,7 +4,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { CouponApiService } from '@/demo/service/CouponApiService';
+import { CouponApiService } from '@/service/CouponApiService';
 import { Coupon, CreateCouponDto, UpdateCouponDto } from '@/types/coupon';
 import { PaginatedData } from '@/types/response';
 import {

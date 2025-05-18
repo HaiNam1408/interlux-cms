@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Customer, CustomerOrder } from '@/types/customer';
-import { CustomerApiService } from '@/demo/service/CustomerApiService';
+import { CustomerApiService } from '@/service/CustomerApiService';
 
 interface CustomerOrdersDialogProps {
     visible: boolean;

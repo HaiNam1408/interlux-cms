@@ -4,7 +4,7 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Button } from 'primereact/button';
 import { TabView, TabPanel } from 'primereact/tabview';
-import { OrderApiService } from '@/demo/service/OrderApiService';
+import { OrderApiService } from '@/service/OrderApiService';
 import { Order, OrderStatus, UpdateOrderStatusDto } from '@/types/order';
 import { PaginatedData } from '@/types/response';
 import {
