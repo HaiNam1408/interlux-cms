@@ -1,59 +1,45 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { Button } from 'primereact/button';
-import { Chart } from 'primereact/chart';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Menu } from 'primereact/menu';
 import { Calendar } from 'primereact/calendar';
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { LayoutContext } from '../../layout/context/layoutcontext';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ChartData, ChartOptions } from 'chart.js';
 import dashboardApiRequest, { AllDashboardStatistics } from '@/api/dashboard';
-import {
-    SalesStatisticsDto,
-    ProductStatisticsDto,
-    CustomerStatisticsDto,
-    OrderStatisticsDto
-} from '@/types/dashboard';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-// Function to generate chart data from revenue by status
-const generateChartData = (revenueByStatus: Record<string, number> | undefined): ChartData => {
+// Chart container style
+const chartContainerStyle: React.CSSProperties = {
+    width: '100%',
+    height: 300
+};
+
+// Status colors for charts
+const chartColors = {
+    'PENDING': '#64B5F6',
+    'PROCESSING': '#FFB74D',
+    'SHIPPED': '#7986CB',
+    'DELIVERED': '#4DB6AC',
+    'COMPLETED': '#81C784',
+    'CANCELLED': '#E57373',
+    'RETURNED': '#BA68C8',
+    'REFUNDED': '#F06292'
+};
+
+// Format data for Recharts
+const generateChartData = (revenueByStatus: Record<string, number> | undefined) => {
     if (!revenueByStatus) {
-        return {
-            labels: [],
-            datasets: []
-        };
+        return [];
     }
 
-    const statusLabels = Object.keys(revenueByStatus);
-    const statusValues = Object.values(revenueByStatus);
-
-    // Define colors for different statuses
-    const statusColors = {
-        'PENDING': '#64B5F6',      // Blue
-        'PROCESSING': '#FFB74D',   // Orange
-        'SHIPPED': '#7986CB',      // Indigo
-        'DELIVERED': '#4DB6AC',    // Teal
-        'COMPLETED': '#81C784',    // Green
-        'CANCELLED': '#E57373',    // Red
-        'RETURNED': '#BA68C8',     // Purple
-        'REFUNDED': '#F06292'      // Pink
-    };
-
-    return {
-        labels: statusLabels,
-        datasets: [
-            {
-                label: 'Revenue by Order Status',
-                data: statusValues,
-                backgroundColor: statusLabels.map(status => statusColors[status as keyof typeof statusColors] || '#9E9E9E'),
-                borderColor: statusLabels.map(status => statusColors[status as keyof typeof statusColors] || '#9E9E9E'),
-                borderWidth: 1
-            }
-        ]
-    };
+    // Transform the data into the format Recharts expects
+    return Object.entries(revenueByStatus).map(([status, value]) => ({
+        name: status,
+        value: value,
+        fill: chartColors[status as keyof typeof chartColors] || '#9E9E9E'
+    }));
 };
 
 interface Product {
@@ -92,72 +78,6 @@ const Dashboard = () => {
     const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
     const menu1 = useRef<Menu>(null);
     const menu2 = useRef<Menu>(null);
-    const [lineOptions, setLineOptions] = useState<ChartOptions>({});
-    const { layoutConfig } = useContext(LayoutContext);
-
-    const applyLightTheme = () => {
-        const lineOptions: ChartOptions = {
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#495057'
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: '#495057'
-                    },
-                    grid: {
-                        color: '#ebedef'
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: '#495057'
-                    },
-                    grid: {
-                        color: '#ebedef'
-                    }
-                }
-            }
-        };
-
-        setLineOptions(lineOptions);
-    };
-
-    const applyDarkTheme = () => {
-        const lineOptions = {
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#ebedef'
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: '#ebedef'
-                    },
-                    grid: {
-                        color: 'rgba(160, 167, 181, .3)'
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: '#ebedef'
-                    },
-                    grid: {
-                        color: 'rgba(160, 167, 181, .3)'
-                    }
-                }
-            }
-        };
-
-        setLineOptions(lineOptions);
-    };
 
     const fetchDashboardData = async (startDate?: string, endDate?: string) => {
         setLoading(true);
@@ -195,13 +115,7 @@ const Dashboard = () => {
         fetchDashboardData();
     }, []);
 
-    useEffect(() => {
-        if (layoutConfig.colorScheme === 'light') {
-            applyLightTheme();
-        } else {
-            applyDarkTheme();
-        }
-    }, [layoutConfig.colorScheme]);
+    // No need for theme-specific chart options with Recharts
 
     const formatCurrency = (value: number) => {
         return value?.toLocaleString('en-US', {
@@ -393,7 +307,24 @@ const Dashboard = () => {
                     <div className="col-12 xl:col-6">
                         <div className="card">
                             <h5>Revenue by Order Status</h5>
-                            <Chart type="bar" data={generateChartData(dashboardStats?.sales.revenueByStatus)} options={lineOptions} />
+                            <div style={chartContainerStyle}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart
+                                        data={generateChartData(dashboardStats?.sales.revenueByStatus)}
+                                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                                    >
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip
+                                            formatter={(value) => [`$${value}`, 'Revenue']}
+                                            labelFormatter={(label) => `Status: ${label}`}
+                                        />
+                                        <Legend />
+                                        <Bar dataKey="value" name="Revenue" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
 
                         <div className="card">

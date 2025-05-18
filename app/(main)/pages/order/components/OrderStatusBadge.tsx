@@ -31,7 +31,7 @@ const OrderStatusBadge: React.FC<OrderStatusBadgeProps> = ({ status }) => {
     return (
         <Tag 
             value={status} 
-            severity={getSeverity(status)} 
+            // severity={getSeverity(status)} 
             className="text-sm font-medium"
         />
     );

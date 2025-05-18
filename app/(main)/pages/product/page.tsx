@@ -59,11 +59,7 @@ const ProductPage = () => {
     const [rows, setRows] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(false);
-
-    // Images to delete when updating - store objects with fileName and url
     const [imagesToDelete, setImagesToDelete] = useState<{fileName: string, url: string}[]>([]);
-
-    // Track if 3D model should be deleted when updating
     const [removeModel, setRemoveModel] = useState<boolean>(false);
 
     useEffect(() => {
@@ -147,7 +143,6 @@ const ProductPage = () => {
             formData.append('sort', (_product.sort || 0).toString());
             formData.append('status', _product.status);
 
-            // Handle attributes as JSON string
             if (_product.attributes) {
                 formData.append('attributes', JSON.stringify(_product.attributes));
             } else {
@@ -180,7 +175,6 @@ const ProductPage = () => {
             }
 
             if (_product.id) {
-                // Update existing product
                 ProductApiService.updateProduct(_product.id, formData)
                     .then(() => {
                         toast.current?.show({
@@ -251,7 +245,6 @@ const ProductPage = () => {
                     setProduct({ ...product });
                 });
         } else {
-            // For new products
             setProduct({ ...product });
             setProductSidebar(true);
         }
@@ -337,7 +330,6 @@ const ProductPage = () => {
         let _product = { ...product } as any;
         _product[name] = val;
 
-        // Auto-generate slug when title changes
         if (name === 'title' && !_product.slug) {
             _product.slug = generateSlug(val);
         }
@@ -364,7 +356,6 @@ const ProductPage = () => {
         }
     };
 
-    // Handle rich text editor changes
     const onEditorChange = (val: string, name: string) => {
         let _product = { ...product } as any;
         _product[name] = val;
@@ -398,7 +389,6 @@ const ProductPage = () => {
         setProduct(_product);
     };
 
-    // Handle pagination change
     const onPage = (event: any) => {
         setFirst(event.first);
         setRows(event.rows);
