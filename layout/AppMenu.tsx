@@ -86,14 +86,14 @@ const AppMenu = () => {
             label: 'Content Management',
             items: [
                 {
-                    label: 'Navigation',
-                    icon: 'pi pi-fw pi-align-left',
-                    to: '/pages/empty'
+                    label: 'Blog Posts',
+                    icon: 'pi pi-fw pi-file-o',
+                    to: '/pages/blog'
                 },
                 {
-                    label: 'Blog',
-                    icon: 'pi pi-fw pi-file-o',
-                    to: '/pages/empty'
+                    label: 'Tags',
+                    icon: 'pi pi-fw pi-tags',
+                    to: '/pages/tag'
                 },
                 {
                     label: 'Banners',
