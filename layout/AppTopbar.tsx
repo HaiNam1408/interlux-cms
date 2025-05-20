@@ -39,19 +39,13 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                 {isAuthenticated && (
                     <>
                         <button type="button" className="p-link layout-topbar-button">
-                            <i className="pi pi-calendar"></i>
-                            <span>Calendar</span>
+                            <i className="pi pi-bell"></i>
+                            <span>Notification</span>
                         </button>
                         <button type="button" className="p-link layout-topbar-button">
                             <i className="pi pi-user"></i>
                             <span>{user?.email || 'Profile'}</span>
                         </button>
-                        <Link href="/documentation">
-                            <button type="button" className="p-link layout-topbar-button">
-                                <i className="pi pi-cog"></i>
-                                <span>Settings</span>
-                            </button>
-                        </Link>
                         <button type="button" className="p-link layout-topbar-button" onClick={logout}>
                             <i className="pi pi-sign-out"></i>
                             <span>Logout</span>

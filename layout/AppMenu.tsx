@@ -57,11 +57,6 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-users',
                     to: '/customer'
                 },
-                {
-                    label: 'Inventory',
-                    icon: 'pi pi-fw pi-database',
-                    to: '/empty'
-                }
             ]
         },
         {
@@ -73,8 +68,8 @@ const AppMenu = () => {
                     to: '/coupon'
                 },
                 {
-                    label: 'Events',
-                    icon: 'pi pi-fw pi-calendar',
+                    label: 'Notification',
+                    icon: 'pi pi-fw pi-bell',
                     to: '/empty'
                 }
             ]
@@ -112,11 +107,6 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-star-fill',
                     to: '/empty'
                 },
-                {
-                    label: 'Customer Insights',
-                    icon: 'pi pi-fw pi-eye',
-                    to: '/empty'
-                }
             ]
         },
         {
