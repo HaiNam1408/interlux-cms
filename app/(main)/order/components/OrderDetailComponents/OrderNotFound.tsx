@@ -16,7 +16,7 @@ const OrderNotFound: React.FC = () => {
                     label="Go Back to Orders" 
                     icon="pi pi-arrow-left" 
                     className="mt-3" 
-                    onClick={() => router.push('/pages/order')} 
+                    onClick={() => router.push('/order')} 
                 />
             </div>
         </Card>

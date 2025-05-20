@@ -23,7 +23,6 @@ export const TagApiService = {
             }
             return null;
         } catch (error) {
-            console.error('Error fetching tags:', error);
             return null;
         }
     },
@@ -33,7 +32,6 @@ export const TagApiService = {
             const response = await http.get<any>('/tag/all');
             return response.data || [];
         } catch (error) {
-            console.error('Error fetching all tags:', error);
             return null;
         }
     },
@@ -43,7 +41,6 @@ export const TagApiService = {
             const response = await http.get<any>(`/tag/${id}`);
             return response.data || null;
         } catch (error) {
-            console.error(`Error fetching tag ${id}:`, error);
             return null;
         }
     },
@@ -53,7 +50,6 @@ export const TagApiService = {
             const response = await http.get<any>(`/tag/slug/${slug}`);
             return response.data || null;
         } catch (error) {
-            console.error(`Error fetching tag with slug ${slug}:`, error);
             return null;
         }
     },
@@ -63,7 +59,6 @@ export const TagApiService = {
             const response = await http.post<any>('/tag', tagData);
             return response.data || null;
         } catch (error) {
-            console.error('Error creating tag:', error);
             throw error;
         }
     },
@@ -73,7 +68,6 @@ export const TagApiService = {
             const response = await http.patch<any>(`/tag/${id}`, tagData);
             return response.data || null;
         } catch (error) {
-            console.error(`Error updating tag ${id}:`, error);
             throw error;
         }
     },
@@ -83,7 +77,6 @@ export const TagApiService = {
             await http.delete<any>(`/tag/${id}`);
             return true;
         } catch (error) {
-            console.error(`Error deleting tag ${id}:`, error);
             return false;
         }
     }

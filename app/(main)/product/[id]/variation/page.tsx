@@ -29,12 +29,6 @@ const ProductVariationPage = () => {
     const router = useRouter();
     const productId = params.id ? parseInt(params.id as string) : 0;
 
-    useEffect(() => {
-        if (!productId) {
-            console.error('No product ID provided');
-        }
-    }, [productId, router]);
-
     let emptyProductVariation: ProductVariation = {
         id: 0,
         productId: productId,
@@ -101,11 +95,7 @@ const ProductVariationPage = () => {
     const loadProductAttributes = async () => {
         try {
             setLoading(true);
-            console.log('Loading product attributes for product ID:', productId);
-
             const response = await ProductAttributeApiService.getProductAttributes(productId);
-
-            console.log('Product attributes response:', response);
 
             if (response && response.data) {
                 const attributesWithValues = await Promise.all(
@@ -127,7 +117,6 @@ const ProductVariationPage = () => {
 
             setLoading(false);
         } catch (error) {
-            console.error('Error in loadProductAttributes:', error);
             setLoading(false);
             setProductAttributes([]);
             toast.current?.show({
@@ -144,8 +133,6 @@ const ProductVariationPage = () => {
             setLoading(true);
             const response = await ProductVariationApiService.getProductVariations(productId);
 
-            console.log('Product variations response in page:', response);
-
             if (response && response.data) {
                 setProductVariations(response.data);
                 setTotalRecords(response.data.length);
@@ -156,7 +143,6 @@ const ProductVariationPage = () => {
 
             setLoading(false);
         } catch (error) {
-            console.error('Error in loadProductVariations:', error);
             setLoading(false);
             setProductVariations([]);
             setTotalRecords(0);
@@ -192,12 +178,9 @@ const ProductVariationPage = () => {
     const saveProductVariation = async () => {
         setSubmitted(true);
 
-        console.log('Saving product variation:', productVariation);
-
         if (productVariation.sku && productVariation.sku.trim()) {
             try {
                 let _productVariation = { ...productVariation };
-                console.log('Prepared product variation for saving:', _productVariation);
                 const formData = new FormData();
 
                 formData.append('sku', _productVariation.sku || '');
@@ -283,7 +266,6 @@ const ProductVariationPage = () => {
                 setImagesToDelete([]);
                 loadProductVariations();
             } catch (error: any) {
-                console.error('Failed to save product variation:', error);
                 toast.current?.show({
                     severity: 'error',
                     summary: 'Error',
@@ -295,28 +277,19 @@ const ProductVariationPage = () => {
     };
 
     const editProductVariation = async (variation: ProductVariation) => {
-        console.log('Editing variation:', variation);
         setImagesToDelete([]);
 
         if (variation.id) {
             try {
-                console.log('Fetching full variation data for ID:', variation.id);
                 const fullVariation = await ProductVariationApiService.getProductVariationById(productId, variation.id);
 
                 if (fullVariation) {
-                    console.log('Received full variation data:', fullVariation);
-
-                    // Ensure attributeValues is properly initialized
                     if (!fullVariation.attributeValues) {
-                        console.log('attributeValues is missing, initializing empty array');
                         fullVariation.attributeValues = [];
-                    } else {
-                        console.log('Variation has attributeValues:', fullVariation.attributeValues);
                     }
 
                     // If we don't have attributeValue objects with attributeId, try to find them
                     if (fullVariation.attributeValues.length > 0 && productAttributes.length > 0) {
-                        console.log('Trying to enhance attributeValues with attributeValue objects');
 
                         fullVariation.attributeValues = fullVariation.attributeValues.map(av => {
                             // If we already have attributeValue with attributeId, keep it
@@ -329,7 +302,6 @@ const ProductVariationPage = () => {
                                 if (attr.values) {
                                     const matchingValue = attr.values.find(val => val.id === av.attributeValueId);
                                     if (matchingValue) {
-                                        console.log(`Found matching attribute (${attr.id}) for value ${av.attributeValueId}`);
                                         return {
                                             ...av,
                                             attributeValue: {
@@ -346,8 +318,6 @@ const ProductVariationPage = () => {
 
                     setProductVariation(fullVariation);
                 } else {
-                    console.warn('No full variation data received, using row data');
-                    // Make sure we have an attributeValues array
                     const variationWithDefaults = {
                         ...variation,
                         attributeValues: variation.attributeValues || []
@@ -355,8 +325,6 @@ const ProductVariationPage = () => {
                     setProductVariation(variationWithDefaults);
                 }
             } catch (error) {
-                console.error('Error fetching full product variation data:', error);
-                // Make sure we have an attributeValues array
                 const variationWithDefaults = {
                     ...variation,
                     attributeValues: variation.attributeValues || []
@@ -364,10 +332,8 @@ const ProductVariationPage = () => {
                 setProductVariation(variationWithDefaults);
             }
 
-            // Set dialog visible after data is prepared
             setVariationDialog(true);
         } else {
-            // Make sure we have an attributeValues array for new variations too
             const variationWithDefaults = {
                 ...variation,
                 attributeValues: []
@@ -468,21 +434,14 @@ const ProductVariationPage = () => {
     };
 
     const onAttributeValueChange = (attributeId: number, valueId: number) => {
-        console.log(`VariationPage - Changing attribute ${attributeId} to value ${valueId}`);
-        console.log('Current productVariation:', productVariation);
-
         let _variation = { ...productVariation };
 
-        // If attributeValues doesn't exist, initialize it
         if (!_variation.attributeValues) {
-            console.log('Initializing empty attributeValues array');
             _variation.attributeValues = [];
         }
 
         // Ensure productAttributes is defined and has values
         if (!productAttributes || productAttributes.length === 0) {
-            console.warn('productAttributes is empty or undefined');
-            // Still add the value even without the full attribute info
             _variation.attributeValues.push({
                 id: 0,
                 productVariationId: _variation.id || 0,
@@ -492,32 +451,18 @@ const ProductVariationPage = () => {
             return;
         }
 
-        // Find the attribute value in the productAttributes to get its details
         const attribute = productAttributes.find(attr => attr.id === attributeId);
         const attributeValue = attribute?.values?.find(val => val.id === valueId);
 
-        if (attributeValue) {
-            console.log('Found attribute value in productAttributes:', attributeValue);
-        } else {
-            console.warn(`Could not find attribute value for attributeId=${attributeId}, valueId=${valueId}`);
-        }
-
-        // Find if we already have a value for this attribute
-        // We need to check both ways: by attributeValue.attributeId and by matching attributeValueId to values in productAttributes
         const existingIndex = _variation.attributeValues.findIndex(av => {
             if (!av) return false;
 
-            // Check if we have the attributeValue object with attributeId
             if (av.attributeValue && av.attributeValue.attributeId === attributeId) {
                 return true;
             }
 
-            // If not, try to find a match by checking if this value belongs to the current attribute
-            // by looking through productAttributes
             for (const attr of productAttributes) {
                 if (attr.id === attributeId) {
-                    // This is the attribute we're looking for
-                    // Check if the current attributeValue belongs to this attribute
                     if (attr.values) {
                         const matchingValue = attr.values.find(val => val.id === av.attributeValueId);
                         if (matchingValue) {
@@ -530,14 +475,9 @@ const ProductVariationPage = () => {
             return false;
         });
 
-        console.log('Existing index for attribute:', existingIndex);
-
         if (existingIndex >= 0) {
-            // Update existing value
-            console.log('Updating existing attribute value');
             _variation.attributeValues[existingIndex].attributeValueId = valueId;
 
-            // Also update the attributeValue object if it exists
             if (_variation.attributeValues[existingIndex].attributeValue) {
                 if (attributeValue) {
                     _variation.attributeValues[existingIndex].attributeValue = {
@@ -547,7 +487,6 @@ const ProductVariationPage = () => {
                     };
                 }
             } else {
-                // Create attributeValue object if it doesn't exist
                 if (attributeValue) {
                     _variation.attributeValues[existingIndex].attributeValue = {
                         ...attributeValue,
@@ -557,8 +496,6 @@ const ProductVariationPage = () => {
                 }
             }
         } else {
-            // Add new value
-            console.log('Adding new attribute value');
             if (attributeValue) {
                 _variation.attributeValues.push({
                     id: 0,
@@ -579,20 +516,15 @@ const ProductVariationPage = () => {
             }
         }
 
-        console.log('Updated variation attributeValues:', _variation.attributeValues);
         setProductVariation(_variation);
     };
 
     const handleImageDelete = (image: {fileName: string, url: string}) => {
         if (!image) {
-            console.warn('Attempted to delete undefined image');
             return;
         }
 
         setImagesToDelete([...imagesToDelete, image]);
-
-        console.log('Adding image to delete:', image);
-        console.log('Updated imagesToDelete:', [...imagesToDelete, image]);
 
         let _variation = { ...productVariation };
         if (_variation.images && Array.isArray(_variation.images)) {
@@ -609,14 +541,11 @@ const ProductVariationPage = () => {
             });
             setProductVariation(_variation);
         } else {
-            console.warn('Product variation images is not an array:', _variation.images);
-            // Initialize images array if it doesn't exist
             _variation.images = [];
             setProductVariation(_variation);
         }
     };
 
-    // Handle pagination change
     const onPage = (event: any) => {
         setFirst(event.first);
         setRows(event.rows);
@@ -641,7 +570,7 @@ const ProductVariationPage = () => {
                             label="Back to Products"
                             icon="pi pi-arrow-left"
                             className="p-button-outlined"
-                            onClick={() => router.push('/pages/product')}
+                            onClick={() => router.push('/product')}
                         />
                     </div>
 

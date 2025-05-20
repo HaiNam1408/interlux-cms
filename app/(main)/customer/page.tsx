@@ -46,10 +46,8 @@ const CustomerPage = () => {
                 setLoading(false);
             })
             .catch((error: any) => {
-                console.error('Error loading customers:', error);
                 setLoading(false);
 
-                // Display the specific error message if available
                 const errorDetail = error.payload?.message || 'Failed to load customers';
                 toast.current?.show({
                     severity: 'error',
@@ -109,14 +107,9 @@ const CustomerPage = () => {
                 loadCustomers();
             }
         } catch (error: any) {
-            console.error('Error saving customer:', error);
-
-            // If it's a validation error, we'll let the form component handle it
             if (error.status === 400 && error.payload) {
-                // Re-throw the error so the form can handle it
                 throw error;
             }
-            // Handle conflict errors (e.g., email already exists)
             else if (error.status === 409 && error.payload) {
                 const errorMessage = error.payload.message || 'A conflict occurred with existing data';
                 toast.current?.show({
@@ -127,7 +120,6 @@ const CustomerPage = () => {
                 });
             }
             else {
-                // For other errors, show a generic error message or the specific message if available
                 const errorDetail = error.payload?.message || 'Failed to save customer';
                 toast.current?.show({
                     severity: 'error',
@@ -163,9 +155,6 @@ const CustomerPage = () => {
                 loadCustomers();
             }
         } catch (error: any) {
-            console.error('Error deleting customer:', error);
-
-            // Display the specific error message if available
             const errorDetail = error.payload?.message || 'Failed to delete customer';
             toast.current?.show({
                 severity: 'error',
@@ -199,9 +188,6 @@ const CustomerPage = () => {
             setSelectedCustomers([]);
             loadCustomers();
         } catch (error: any) {
-            console.error('Error deleting selected customers:', error);
-
-            // Display the specific error message if available
             const errorDetail = error.payload?.message || 'Failed to delete selected customers';
             toast.current?.show({
                 severity: 'error',

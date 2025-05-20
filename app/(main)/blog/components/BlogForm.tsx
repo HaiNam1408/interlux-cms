@@ -72,7 +72,6 @@ export const BlogForm = (props: BlogFormProps) => {
                 setAllTags(response);
             }
         } catch (error) {
-            console.error('Error loading tags:', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to load tags', life: 3000 });
         }
     };
@@ -159,7 +158,6 @@ export const BlogForm = (props: BlogFormProps) => {
             await onSave(formData);
             resetForm();
         } catch (error) {
-            console.error('Error saving post:', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to save blog post', life: 3000 });
         } finally {
             setLoading(false);

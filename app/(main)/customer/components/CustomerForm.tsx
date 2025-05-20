@@ -96,23 +96,18 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ visible, customer, onHide, 
     const handleSubmit = async () => {
         setSubmitted(true);
         setValidationErrors({});
-
-        // Validation for required fields
         if (!formData.username || !formData.email || !formData.phone || (isNew && !formData.password)) {
             return;
         }
 
-        // Prepare data for submission
         const customerData: CreateCustomerDto | UpdateCustomerDto = { ...formData };
 
-        // Handle avatar
         if (avatar) {
             customerData.avatar = avatar;
         } else if (deleteAvatar) {
-            customerData.avatar = ''; // Empty string to indicate deletion
+            customerData.avatar = '';
         }
 
-        // If updating and password is empty, remove it from the payload
         if (!isNew && !formData.password) {
             delete customerData.password;
         }
@@ -120,13 +115,8 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ visible, customer, onHide, 
         try {
             await onSave(customerData, isNew);
         } catch (error: any) {
-            console.error('Validation error:', error);
-
-            // Handle API validation errors
             if (error.status === 400 && error.payload) {
                 const errorData = error.payload;
-
-                // If the error message is an array of validation messages
                 if (Array.isArray(errorData.message)) {
                     const errors: any = {};
 
@@ -151,13 +141,11 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ visible, customer, onHide, 
 
                     setValidationErrors(errors);
                 } else if (typeof errorData.message === 'string') {
-                    // If the error message is a single string
                     setValidationErrors({
                         general: [errorData.message]
                     });
                 }
             }
-            // For other error types (like 409 Conflict), the parent component will handle them
         }
     };
 

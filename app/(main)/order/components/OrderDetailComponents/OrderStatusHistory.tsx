@@ -1,8 +1,8 @@
 import React from 'react';
 import { Timeline } from 'primereact/timeline';
 import { Card } from 'primereact/card';
-import { OrderStatus, OrderStatusHistory as OrderStatusHistoryType } from '@/types/order';
-import { OrderStatusBadge } from '../../components';
+import { OrderStatusHistory as OrderStatusHistoryType } from '@/types/order';
+import { OrderStatusBadge } from '..';
 
 interface OrderStatusHistoryProps {
     statusHistory?: OrderStatusHistoryType[];

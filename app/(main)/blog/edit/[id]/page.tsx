@@ -25,7 +25,7 @@ const EditBlogPage = ({ params }: EditBlogPageProps) => {
                 const postId = parseInt(resolvedParams.id);
                 if (isNaN(postId)) {
                     toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Invalid post ID', life: 3000 });
-                    router.push('/pages/blog');
+                    router.push('/blog');
                     return;
                 }
 
@@ -34,12 +34,11 @@ const EditBlogPage = ({ params }: EditBlogPageProps) => {
                     setPost(postData);
                 } else {
                     toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Blog post not found', life: 3000 });
-                    router.push('/pages/blog');
+                    router.push('/blog');
                 }
             } catch (error) {
-                console.error('Error fetching blog post:', error);
                 toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to load blog post', life: 3000 });
-                router.push('/pages/blog');
+                router.push('/blog');
             } finally {
                 setLoading(false);
             }
@@ -66,15 +65,14 @@ const EditBlogPage = ({ params }: EditBlogPageProps) => {
             });
             
             toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Blog post updated successfully', life: 3000 });
-            router.push('/pages/blog');
+            router.push('/blog');
         } catch (error) {
-            console.error('Error updating blog post:', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to update blog post', life: 3000 });
         }
     };
 
     const handleCancel = () => {
-        router.push('/pages/blog');
+        router.push('/blog');
     };
 
     if (loading) {

@@ -10,24 +10,18 @@ import {
 import { PaginatedData } from '@/types/response';
 
 export const ProductAttributeApiService = {
-    // Product Attribute APIs
     async getProductAttributes(productId: number, page = 1, limit = 10): Promise<PaginatedData<ProductAttribute> | null> {
         try {
             const response = await http.get<any>(`/product/${productId}/attribute`, {
                 params: { page, limit }
             });
-
-            console.log(`Product attributes API response for product ${productId}:`, JSON.stringify(response.data, null, 2));
-
-            if (response.data) {
-                // Check if the response has a nested data.data structure (common in some APIs)
+            if (response.data) {// Check if the response has a nested data.data structure (common in some APIs)
                 if (response.data.data && response.data.data.data) {
                     return {
                         data: response.data.data.data || [],
                         meta: response.data.data.meta || { total: 0, page: 1, limit: 10, totalPages: 1 }
                     };
                 }
-                // Check if response.data.data is an array (common structure)
                 else if (Array.isArray(response.data.data)) {
                     return {
                         data: response.data.data || [],
@@ -43,14 +37,11 @@ export const ProductAttributeApiService = {
                 }
             }
 
-            // If we couldn't parse the response in any expected format, return empty data
-            console.warn(`Could not parse product attributes response for product ${productId} in any expected format`);
             return {
                 data: [],
                 meta: { total: 0, page: 1, limit: 10, totalPages: 1 }
             };
         } catch (error) {
-            console.error(`Error fetching product attributes for product ${productId}:`, error);
             return {
                 data: [],
                 meta: { total: 0, page: 1, limit: 10, totalPages: 1 }
@@ -68,7 +59,6 @@ export const ProductAttributeApiService = {
 
             return null;
         } catch (error) {
-            console.error(`Error fetching product attribute ${attributeId}:`, error);
             return null;
         }
     },
@@ -83,7 +73,6 @@ export const ProductAttributeApiService = {
 
             return null;
         } catch (error) {
-            console.error(`Error creating product attribute for product ${productId}:`, error);
             throw error;
         }
     },
@@ -98,7 +87,6 @@ export const ProductAttributeApiService = {
 
             return null;
         } catch (error) {
-            console.error(`Error updating product attribute ${attributeId}:`, error);
             throw error;
         }
     },
@@ -108,22 +96,17 @@ export const ProductAttributeApiService = {
             const response = await http.delete<any>(`/product/${productId}/attribute/${attributeId}`);
             return response.data && response.data.data ? response.data.data.success : true;
         } catch (error) {
-            console.error(`Error deleting product attribute ${attributeId}:`, error);
             throw error;
         }
     },
 
-    // Product Attribute Value APIs
     async getAttributeValues(productId: number, attributeId: number, page = 1, limit = 10): Promise<PaginatedData<ProductAttributeValue> | null> {
         try {
             const response = await http.get<any>(`/product/${productId}/attribute/${attributeId}/value`, {
                 params: { page, limit }
             });
 
-            console.log(`Attribute values API response for attribute ${attributeId}:`, JSON.stringify(response.data, null, 2));
-
             if (response.data) {
-                // Check if the response has a nested data.data structure (common in some APIs)
                 if (response.data.data && response.data.data.data) {
                     return {
                         data: response.data.data.data || [],
@@ -146,14 +129,11 @@ export const ProductAttributeApiService = {
                 }
             }
 
-            // If we couldn't parse the response in any expected format, return empty data
-            console.warn(`Could not parse attribute values response for attribute ${attributeId} in any expected format`);
             return {
                 data: [],
                 meta: { total: 0, page: 1, limit: 10, totalPages: 1 }
             };
         } catch (error) {
-            console.error(`Error fetching attribute values for attribute ${attributeId}:`, error);
             return {
                 data: [],
                 meta: { total: 0, page: 1, limit: 10, totalPages: 1 }
@@ -171,7 +151,6 @@ export const ProductAttributeApiService = {
 
             return null;
         } catch (error) {
-            console.error(`Error fetching attribute value ${valueId}:`, error);
             return null;
         }
     },
@@ -186,7 +165,6 @@ export const ProductAttributeApiService = {
 
             return null;
         } catch (error) {
-            console.error(`Error creating attribute value for attribute ${attributeId}:`, error);
             throw error;
         }
     },
@@ -201,7 +179,6 @@ export const ProductAttributeApiService = {
 
             return null;
         } catch (error) {
-            console.error(`Error updating attribute value ${valueId}:`, error);
             throw error;
         }
     },
@@ -211,7 +188,6 @@ export const ProductAttributeApiService = {
             const response = await http.delete<any>(`/product/${productId}/attribute/${attributeId}/value/${valueId}`);
             return response.data && response.data.data ? response.data.data.success : true;
         } catch (error) {
-            console.error(`Error deleting attribute value ${valueId}:`, error);
             throw error;
         }
     }

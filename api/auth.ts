@@ -37,7 +37,6 @@ export const parseJwtToken = (token: string): UserProfile => {
             name: payload.name
         };
     } catch (error) {
-        console.error('Error parsing JWT token:', error);
         throw new Error('Invalid token format');
     }
 };

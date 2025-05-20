@@ -23,7 +23,6 @@ export const CustomerApiService = {
             }
             return null;
         } catch (error) {
-            console.error('Error fetching customers:', error);
             return null;
         }
     },
@@ -33,7 +32,6 @@ export const CustomerApiService = {
             const response = await http.get<any>(`/customer/${id}`);
             return response.data || null;
         } catch (error) {
-            console.error(`Error fetching customer ${id}:`, error);
             return null;
         }
     },
@@ -58,7 +56,6 @@ export const CustomerApiService = {
             const response = await http.post<any>('/customer', formData);
             return response.data || null;
         } catch (error) {
-            console.error('Error creating customer:', error);
             throw error;
         }
     },
@@ -96,7 +93,6 @@ export const CustomerApiService = {
             const response = await http.put<any>(`/customer/${id}`, formData);
             return response.data || null;
         } catch (error) {
-            console.error(`Error updating customer ${id}:`, error);
             throw error;
         }
     },
@@ -106,7 +102,6 @@ export const CustomerApiService = {
             await http.delete(`/customer/${id}`);
             return true;
         } catch (error) {
-            console.error(`Error deleting customer ${id}:`, error);
             throw error;
         }
     },
@@ -125,7 +120,6 @@ export const CustomerApiService = {
             }
             return null;
         } catch (error) {
-            console.error(`Error fetching orders for customer ${id}:`, error);
             return null;
         }
     }

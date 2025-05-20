@@ -23,7 +23,6 @@ export const CouponApiService = {
             }
             return null;
         } catch (error) {
-            console.error('Error fetching coupons:', error);
             return null;
         }
     },
@@ -33,7 +32,6 @@ export const CouponApiService = {
             const response = await http.get<any>(`/coupon/${id}`);
             return response.data || null;
         } catch (error) {
-            console.error(`Error fetching coupon ${id}:`, error);
             return null;
         }
     },
@@ -43,7 +41,6 @@ export const CouponApiService = {
             const response = await http.get<any>(`/coupon/code/${code}`);
             return response.data || null;
         } catch (error) {
-            console.error(`Error fetching coupon with code ${code}:`, error);
             return null;
         }
     },
@@ -53,7 +50,6 @@ export const CouponApiService = {
             const response = await http.post<any>('/coupon', coupon);
             return response.data || null;
         } catch (error) {
-            console.error('Error creating coupon:', error);
             throw error;
         }
     },
@@ -63,7 +59,6 @@ export const CouponApiService = {
             const response = await http.put<any>(`/coupon/${id}`, coupon);
             return response.data || null;
         } catch (error) {
-            console.error(`Error updating coupon ${id}:`, error);
             throw error;
         }
     },
@@ -73,7 +68,6 @@ export const CouponApiService = {
             await http.delete<any>(`/coupon/${id}`);
             return true;
         } catch (error) {
-            console.error(`Error deleting coupon ${id}:`, error);
             throw error;
         }
     }

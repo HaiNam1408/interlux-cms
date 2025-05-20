@@ -24,15 +24,14 @@ const CreateBlogPage = () => {
             });
             
             toast.current?.show({ severity: 'success', summary: 'Success', detail: 'Blog post created successfully', life: 3000 });
-            router.push('/pages/blog');
+            router.push('/blog');
         } catch (error) {
-            console.error('Error creating blog post:', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to create blog post', life: 3000 });
         }
     };
 
     const handleCancel = () => {
-        router.push('/pages/blog');
+        router.push('/blog');
     };
 
     return (

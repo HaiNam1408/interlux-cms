@@ -40,7 +40,6 @@ const CustomerOrdersDialog: React.FC<CustomerOrdersDialogProps> = ({ visible, cu
                 setTotalRecords(0);
             }
         } catch (error) {
-            console.error('Error loading customer orders:', error);
             setOrders([]);
             setTotalRecords(0);
         } finally {
@@ -98,7 +97,7 @@ const CustomerOrdersDialog: React.FC<CustomerOrdersDialogProps> = ({ visible, cu
                     icon="pi pi-eye" 
                     rounded 
                     outlined 
-                    onClick={() => window.location.href = `/pages/orders/${order.id}`} 
+                    onClick={() => window.location.href = `/orders/${order.id}`} 
                     tooltip="View Order" 
                     tooltipOptions={{ position: 'bottom' }}
                 />

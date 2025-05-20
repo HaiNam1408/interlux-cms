@@ -118,9 +118,7 @@ const ProductTable = (props: ProductTableProps) => {
                     tooltip="Manage Variations"
                     tooltipOptions={{ position: 'top' }}
                     onClick={() => {
-                        // Navigate to product variations page
-                        const url = `/pages/product/${rowData.id}/variation`;
-                        console.log(`Navigating to: ${url}`);
+                        const url = `/product/${rowData.id}/variation`;
                         window.location.href = url;
                     }}
                 />

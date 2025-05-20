@@ -29,7 +29,6 @@ export const ProductApiService = {
 
             return null;
         } catch (error) {
-            console.error('Error fetching products:', error);
             return null;
         }
     },
@@ -42,10 +41,8 @@ export const ProductApiService = {
                 return response.data;
             }
 
-            console.error(`Product ${id} not found in response`);
             return null;
         } catch (error) {
-            console.error(`Error fetching product ${id}:`, error);
             return null;
         }
     },
@@ -58,7 +55,6 @@ export const ProductApiService = {
             }
             return null;
         } catch (error) {
-            console.error(`Error fetching product with slug ${slug}:`, error);
             return null;
         }
     },
@@ -71,8 +67,6 @@ export const ProductApiService = {
             }
             return null;
         } catch (error: any) {
-            console.error('Error creating product:', error);
-            console.error('Error details:', error.response?.data || 'No response data');
             throw error;
         }
     },
@@ -85,7 +79,6 @@ export const ProductApiService = {
             }
             return null;
         } catch (error) {
-            console.error(`Error updating product ${id}:`, error);
             throw error;
         }
     },
@@ -95,7 +88,6 @@ export const ProductApiService = {
             const response = await http.delete<any>(`/product/${id}`);
             return response.data && response.data.data ? response.data.data.success : true;
         } catch (error) {
-            console.error(`Error deleting product ${id}:`, error);
             throw error;
         }
     },
@@ -108,7 +100,6 @@ export const ProductApiService = {
             }
             return null;
         } catch (error) {
-            console.error(`Error updating product status ${id}:`, error);
             throw error;
         }
     },
@@ -128,7 +119,6 @@ export const ProductApiService = {
 
             return null;
         } catch (error) {
-            console.error(`Error fetching products for category ${categoryId}:`, error);
             return null;
         }
     },
@@ -152,7 +142,6 @@ export const ProductApiService = {
 
             return null;
         } catch (error) {
-            console.error('Error fetching published products:', error);
             return null;
         }
     }

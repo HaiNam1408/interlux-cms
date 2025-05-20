@@ -59,13 +59,13 @@ const ProductForm = (props: ProductFormProps) => {
 
     const navigateToAttributes = () => {
         if (product.id) {
-            router.push(`/pages/product/${product.id}/attribute`);
+            router.push(`/product/${product.id}/attribute`);
         }
     };
 
     const navigateToVariations = () => {
         if (product.id) {
-            router.push(`/pages/product/${product.id}/variation`);
+            router.push(`/product/${product.id}/variation`);
         }
     };
 

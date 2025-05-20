@@ -3,7 +3,7 @@ import { InputNumberValueChangeEvent } from 'primereact/inputnumber';
 import { Toast } from 'primereact/toast';
 import { DropResult } from 'react-beautiful-dnd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { CategoryService } from '../../../../service/CategoryService';
+import { CategoryService } from '../../../service/CategoryService';
 import { Category as CategoryType } from '@/types/category';
 import { PaginatedData } from '@/types/response';
 import {
@@ -61,7 +61,6 @@ const Category = () => {
                 setLoading(false);
             })
             .catch((error) => {
-                console.error('Error loading categories:', error);
                 setLoading(false);
                 toast.current?.show({
                     severity: 'error',

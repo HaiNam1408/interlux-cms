@@ -249,7 +249,7 @@ const Dashboard = () => {
                                     header="View"
                                     style={{ width: '15%' }}
                                     body={(data) => (
-                                        <Link href={`/pages/order/${data.id}`}>
+                                        <Link href={`/order/${data.id}`}>
                                             <Button icon="pi pi-search" text />
                                         </Link>
                                     )}

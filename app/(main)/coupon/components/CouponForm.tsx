@@ -141,9 +141,6 @@ const CouponForm: React.FC<CouponFormProps> = ({ visible, coupon, onHide, onSave
             await onSave(formData, isNew);
             onHide();
         } catch (error: any) {
-            console.error('Error saving coupon:', error);
-
-            // Handle validation errors from the server
             if (error.status === 400 && error.payload) {
                 const errorData = error.payload;
 

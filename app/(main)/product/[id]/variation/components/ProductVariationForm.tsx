@@ -89,13 +89,10 @@ const ProductVariationForm = (props: ProductVariationFormProps) => {
         });
     };
 
-    // Initialize selected attribute values from productVariation
     useEffect(() => {
         const initialSelectedValues: Record<number, number> = {};
 
         if (productVariation.attributeValues && productVariation.attributeValues.length > 0) {
-            console.log('Processing attributeValues for selection');
-
             productVariation.attributeValues.forEach((av) => {
                 if (av.attributeValue && av.attributeValue.attributeId) {
                     initialSelectedValues[av.attributeValue.attributeId] = av.attributeValueId;
@@ -215,7 +212,6 @@ const ProductVariationForm = (props: ProductVariationFormProps) => {
                                                                     name={`attribute_${attribute.id}`}
                                                                     value={attrValue.id}
                                                                     onChange={() => {
-                                                                        console.log(`Clicked radio button for attribute ${attribute.id}, value ${attrValue.id}`);
                                                                         handleAttributeValueChange(attribute.id, attrValue.id);
                                                                     }}
                                                                     checked={selectedAttributeValues[attribute.id] === attrValue.id}

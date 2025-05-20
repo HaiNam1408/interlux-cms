@@ -23,7 +23,6 @@ export const BlogApiService = {
             }
             return null;
         } catch (error) {
-            console.error('Error fetching blog posts:', error);
             return null;
         }
     },
@@ -33,7 +32,6 @@ export const BlogApiService = {
             const response = await http.get<any>(`/blog/${id}`);
             return response.data || null;
         } catch (error) {
-            console.error(`Error fetching blog post ${id}:`, error);
             return null;
         }
     },
@@ -43,7 +41,6 @@ export const BlogApiService = {
             const response = await http.get<any>(`/blog/slug/${slug}`);
             return response.data || null;
         } catch (error) {
-            console.error(`Error fetching blog post with slug ${slug}:`, error);
             return null;
         }
     },
@@ -88,7 +85,6 @@ export const BlogApiService = {
             const response = await http.post<any>('/blog', formData);
             return response.data || null;
         } catch (error) {
-            console.error('Error creating blog post:', error);
             throw error;
         }
     },
@@ -142,7 +138,6 @@ export const BlogApiService = {
             const response = await http.patch<any>(`/blog/${id}`, formData);
             return response.data || null;
         } catch (error) {
-            console.error(`Error updating blog post ${id}:`, error);
             throw error;
         }
     },
@@ -152,7 +147,6 @@ export const BlogApiService = {
             await http.delete<any>(`/blog/${id}`);
             return true;
         } catch (error) {
-            console.error(`Error deleting blog post ${id}:`, error);
             return false;
         }
     }

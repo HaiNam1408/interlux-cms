@@ -27,15 +27,12 @@ const AttributeQuickManager = (props: AttributeQuickManagerProps) => {
     const [newValueValue, setNewValueValue] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Load attributes when component mounts or when attributes change
     useEffect(() => {
         if (visible) {
-            console.log('AttributeQuickManager - Loading attributes for product ID:', productId);
             loadAttributes();
         }
     }, [visible, productId]);
 
-    // Load attribute values when selected attribute changes
     useEffect(() => {
         if (selectedAttribute) {
             loadAttributeValues(selectedAttribute.id);
@@ -47,28 +44,21 @@ const AttributeQuickManager = (props: AttributeQuickManagerProps) => {
     const loadAttributes = async () => {
         try {
             setLoading(true);
-            console.log('AttributeQuickManager - Fetching attributes for product ID:', productId);
 
             const response = await ProductAttributeApiService.getProductAttributes(productId);
 
-            console.log('AttributeQuickManager - Attributes response:', response);
-
             if (response && response.data) {
-                console.log('AttributeQuickManager - Found', response.data.length, 'attributes');
                 setAttributes(response.data);
 
                 if (response.data.length > 0 && !selectedAttribute) {
-                    console.log('AttributeQuickManager - Setting first attribute as selected:', response.data[0]);
                     setSelectedAttribute(response.data[0]);
                 }
             } else {
-                console.warn('AttributeQuickManager - No valid response data for attributes');
                 setAttributes([]);
             }
 
             setLoading(false);
         } catch (error) {
-            console.error('AttributeQuickManager - Error loading attributes:', error);
             setLoading(false);
             setAttributes([]);
             toast.current?.show({
@@ -83,23 +73,16 @@ const AttributeQuickManager = (props: AttributeQuickManagerProps) => {
     const loadAttributeValues = async (attributeId: number) => {
         try {
             setLoading(true);
-            console.log('AttributeQuickManager - Fetching values for attribute ID:', attributeId);
-
             const response = await ProductAttributeApiService.getAttributeValues(productId, attributeId);
 
-            console.log('AttributeQuickManager - Attribute values response:', response);
-
             if (response && response.data) {
-                console.log('AttributeQuickManager - Found', response.data.length, 'values for attribute');
                 setAttributeValues(response.data);
             } else {
-                console.warn('AttributeQuickManager - No valid response data for attribute values');
                 setAttributeValues([]);
             }
 
             setLoading(false);
         } catch (error) {
-            console.error('AttributeQuickManager - Error loading attribute values:', error);
             setLoading(false);
             setAttributeValues([]);
             toast.current?.show({
@@ -140,7 +123,6 @@ const AttributeQuickManager = (props: AttributeQuickManagerProps) => {
                 life: 3000
             });
         } catch (error) {
-            console.error('Error adding attribute:', error);
             toast.current?.show({
                 severity: 'error',
                 summary: 'Error',
@@ -197,7 +179,6 @@ const AttributeQuickManager = (props: AttributeQuickManagerProps) => {
                 life: 3000
             });
         } catch (error) {
-            console.error('Error adding attribute value:', error);
             toast.current?.show({
                 severity: 'error',
                 summary: 'Error',
@@ -230,7 +211,6 @@ const AttributeQuickManager = (props: AttributeQuickManagerProps) => {
                 life: 3000
             });
         } catch (error) {
-            console.error('Error deleting attribute value:', error);
             toast.current?.show({
                 severity: 'error',
                 summary: 'Error',
@@ -261,7 +241,6 @@ const AttributeQuickManager = (props: AttributeQuickManagerProps) => {
                 life: 3000
             });
         } catch (error) {
-            console.error('Error deleting attribute:', error);
             toast.current?.show({
                 severity: 'error',
                 summary: 'Error',

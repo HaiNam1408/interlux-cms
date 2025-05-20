@@ -85,7 +85,6 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
     };
 
     const avatarBodyTemplate = (rowData: Customer) => {
-        console.log(rowData);
         return (
             <>
                 <span className="p-column-title">Avatar</span>

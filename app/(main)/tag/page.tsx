@@ -42,7 +42,6 @@ const TagPage = () => {
                 setTotalRecords(response.meta.total);
             }
         } catch (error) {
-            console.error('Error loading tags:', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to load tags', life: 3000 });
         } finally {
             setLoading(false);
@@ -85,7 +84,6 @@ const TagPage = () => {
             setTagDialog(false);
             loadTags();
         } catch (error) {
-            console.error('Error saving tag:', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to save tag', life: 3000 });
         }
     };
@@ -110,7 +108,6 @@ const TagPage = () => {
                 loadTags();
             }
         } catch (error) {
-            console.error('Error deleting tag:', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to delete tag', life: 3000 });
         }
     };
@@ -129,7 +126,6 @@ const TagPage = () => {
             setSelectedTags([]);
             loadTags();
         } catch (error) {
-            console.error('Error deleting selected tags:', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to delete tags', life: 3000 });
         }
     };

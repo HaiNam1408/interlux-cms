@@ -37,7 +37,6 @@ const RefundsPage = () => {
                 setLoading(false);
             })
             .catch((error: any) => {
-                console.error('Error loading refunded orders:', error);
                 setLoading(false);
                 
                 const errorDetail = error.payload?.message || 'Failed to load refunded orders';
@@ -87,8 +86,6 @@ const RefundsPage = () => {
             });
             loadRefundedOrders();
         } catch (error: any) {
-            console.error('Error updating order status:', error);
-            
             const errorDetail = error.payload?.message || 'Failed to update order status';
             toast.current?.show({
                 severity: 'error',

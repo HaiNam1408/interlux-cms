@@ -56,7 +56,6 @@ const OrderPage = () => {
                 setLoading(false);
             })
             .catch((error: any) => {
-                console.error('Error loading orders:', error);
                 setLoading(false);
 
                 const errorDetail = error.payload?.message || 'Failed to load orders';
@@ -79,7 +78,6 @@ const OrderPage = () => {
                 setStatsLoading(false);
             })
             .catch((error) => {
-                console.error('Error loading order statistics:', error);
                 setStatsLoading(false);
 
                 const errorDetail = error.payload?.message || 'Failed to load order statistics';
@@ -140,8 +138,6 @@ const OrderPage = () => {
             loadOrders();
             loadStatistics();
         } catch (error: any) {
-            console.error('Error updating order status:', error);
-
             const errorDetail = error.payload?.message || 'Failed to update order status';
             toast.current?.show({
                 severity: 'error',

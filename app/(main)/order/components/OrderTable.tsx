@@ -35,7 +35,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
     const router = useRouter();
 
     const viewOrder = (order: Order) => {
-        router.push(`/pages/order/${order.id}`);
+        router.push(`/order/${order.id}`);
     };
 
     const orderNumberTemplate = (order: Order) => {

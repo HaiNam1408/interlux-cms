@@ -82,7 +82,6 @@ const ProductPage = () => {
                 setLoading(false);
             })
             .catch((error) => {
-                console.error('Error loading products:', error);
                 setLoading(false);
                 setProducts([]);
                 setTotalRecords(0);
@@ -159,7 +158,6 @@ const ProductPage = () => {
 
             // Handle images to delete when updating
             if (_product.id && imagesToDelete.length > 0) {
-                console.log('Sending imagesToDelete:', imagesToDelete);
                 formData.append('imagesToDelete', JSON.stringify(imagesToDelete));
             }
 
@@ -205,8 +203,6 @@ const ProductPage = () => {
                         loadProducts();
                     })
                     .catch((error) => {
-                        console.error('Failed to create product:', error);
-                        console.error('Error response:', error.response?.data);
                         toast.current?.show({
                             severity: 'error',
                             summary: 'Error',
@@ -241,7 +237,6 @@ const ProductPage = () => {
                     }
                 })
                 .catch((error) => {
-                    console.error('Error fetching full product data:', error);
                     setProduct({ ...product });
                 });
         } else {

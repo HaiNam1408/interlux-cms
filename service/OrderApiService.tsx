@@ -31,7 +31,6 @@ export const OrderApiService = {
             }
             return null;
         } catch (error) {
-            console.error('Error fetching orders:', error);
             return null;
         }
     },
@@ -41,7 +40,6 @@ export const OrderApiService = {
             const response = await http.get<any>(`/order/${id}`);
             return response.data || null;
         } catch (error) {
-            console.error(`Error fetching order ${id}:`, error);
             return null;
         }
     },
@@ -51,7 +49,6 @@ export const OrderApiService = {
             const response = await http.put<any>(`/order/${id}/status`, statusData);
             return response.data || null;
         } catch (error) {
-            console.error(`Error updating order status for order ${id}:`, error);
             throw error;
         }
     },
@@ -61,7 +58,6 @@ export const OrderApiService = {
             const response = await http.get<any>('/order/statistics/dashboard');
             return response.data || null;
         } catch (error) {
-            console.error('Error fetching order statistics:', error);
             return null;
         }
     },

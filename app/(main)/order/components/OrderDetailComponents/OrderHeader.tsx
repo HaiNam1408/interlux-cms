@@ -18,7 +18,7 @@ const OrderHeader: React.FC<OrderHeaderProps> = ({ order, loading, onUpdateStatu
                 icon="pi pi-arrow-left" 
                 label="Back to Orders" 
                 className="p-button-text" 
-                onClick={() => router.push('/pages/order')} 
+                onClick={() => router.push('/order')} 
             />
             {!loading && order && (
                 <Button 

@@ -44,7 +44,6 @@ const CouponPage = () => {
                 setLoading(false);
             })
             .catch((error: any) => {
-                console.error('Error loading coupons:', error);
                 setLoading(false);
 
                 const errorDetail = error.payload?.message || 'Failed to load coupons';
@@ -102,7 +101,6 @@ const CouponPage = () => {
                 loadCoupons();
             }
         } catch (error: any) {
-            console.error('Error saving coupon:', error);
             throw error;
         }
     };
@@ -132,7 +130,6 @@ const CouponPage = () => {
                 loadCoupons();
             }
         } catch (error: any) {
-            console.error('Error deleting coupon:', error);
             toast.current?.show({
                 severity: 'error',
                 summary: 'Error',
@@ -162,7 +159,6 @@ const CouponPage = () => {
             setSelectedCoupons([]);
             loadCoupons();
         } catch (error: any) {
-            console.error('Error deleting selected coupons:', error);
             toast.current?.show({
                 severity: 'error',
                 summary: 'Error',

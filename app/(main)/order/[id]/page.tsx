@@ -36,7 +36,6 @@ const OrderDetailsPage = () => {
                 setLoading(false);
             })
             .catch((error: any) => {
-                console.error(`Error loading order ${id}:`, error);
                 setLoading(false);
 
                 const errorDetail = error.payload?.message || 'Failed to load order details';
@@ -72,8 +71,6 @@ const OrderDetailsPage = () => {
             });
             loadOrder();
         } catch (error: any) {
-            console.error('Error updating order status:', error);
-
             const errorDetail = error.payload?.message || 'Failed to update order status';
             toast.current?.show({
                 severity: 'error',

@@ -17,7 +17,7 @@ const RecentOrdersPanel: React.FC<RecentOrdersPanelProps> = ({ orders, loading }
     const router = useRouter();
 
     const viewOrder = (order: Order) => {
-        router.push(`/pages/order/${order.id}`);
+        router.push(`/order/${order.id}`);
     };
 
     const orderNumberTemplate = (order: Order) => {
@@ -69,7 +69,7 @@ const RecentOrdersPanel: React.FC<RecentOrdersPanelProps> = ({ orders, loading }
                 label="View All" 
                 icon="pi pi-arrow-right" 
                 link 
-                onClick={() => router.push('/pages/order')}
+                onClick={() => router.push('/order')}
             />
         </div>
     );

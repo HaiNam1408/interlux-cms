@@ -91,13 +91,11 @@ const request = async <Response>(
     } catch (error) {
         if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError;
-            console.error(`HTTP Error: ${axiosError.response?.status}`, axiosError.response?.data);
             throw new HttpError({
                 status: axiosError.response?.status || 500,
                 payload: axiosError.response?.data || 'Unknown error'
             });
         } else {
-            console.error("Network error or other issue", error);
             throw new Error("Network error or other issue");
         }
     }

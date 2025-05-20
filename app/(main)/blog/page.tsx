@@ -51,14 +51,12 @@ const BlogPage = () => {
                     tagId: lazyParams.tagId || undefined
                 }
             );
-            console.log(response);
             
             if (response) {
                 setPosts(response.data);
                 setTotalRecords(response.meta.total);
             }
         } catch (error) {
-            console.error('Error loading posts:', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to load blog posts', life: 3000 });
         } finally {
             setLoading(false);
@@ -97,11 +95,11 @@ const BlogPage = () => {
     };
 
     const createPost = () => {
-        router.push('/pages/blog/create');
+        router.push('/blog/create');
     };
 
     const editPost = (post: Post) => {
-        router.push(`/pages/blog/edit/${post.id}`);
+        router.push(`/blog/edit/${post.id}`);
     };
 
     const viewPost = (post: Post) => {
@@ -123,7 +121,6 @@ const BlogPage = () => {
                 loadPosts();
             }
         } catch (error) {
-            console.error('Error deleting post:', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to delete blog post', life: 3000 });
         }
     };
@@ -142,7 +139,6 @@ const BlogPage = () => {
             setSelectedPosts([]);
             loadPosts();
         } catch (error) {
-            console.error('Error deleting selected posts:', error);
             toast.current?.show({ severity: 'error', summary: 'Error', detail: 'Failed to delete blog posts', life: 3000 });
         }
     };
