@@ -55,7 +55,7 @@ const CategoryDialog: React.FC<CategoryDialogProps> = ({
             onHide={onHide}
         >
             <div className="field">
-                <label htmlFor="name">Name</label>
+                <label htmlFor="name">Name*</label>
                 <InputText
                     id="name"
                     value={category.name}

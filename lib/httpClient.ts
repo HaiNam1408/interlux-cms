@@ -71,7 +71,6 @@ const request = async <Response>(
             axiosInstance.defaults.baseURL = API_URL;
         }
 
-        // Create request config
         const requestConfig: AxiosRequestConfig = {
             url,
             method,
@@ -101,7 +100,6 @@ const request = async <Response>(
     }
 };
 
-// HTTP client with methods for different HTTP verbs
 const httpClient = {
     get<Response>(url: string, options?: Omit<CustomOptions, "data">) {
         return request<Response>("GET", url, options);
@@ -183,7 +181,6 @@ const httpClient = {
         }
     },
 
-    // Access to the axios instance for advanced use cases
     axiosInstance
 };
 

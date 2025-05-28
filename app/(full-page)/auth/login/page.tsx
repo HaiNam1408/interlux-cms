@@ -12,7 +12,6 @@ import { Message } from 'primereact/message';
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [checked, setChecked] = useState(false);
     const { layoutConfig } = useContext(LayoutContext);
     const { login, isLoading, error } = useAuth();
 
@@ -44,57 +43,25 @@ const LoginPage = () => {
                         </div>
 
                         <form onSubmit={handleLogin}>
-                            {error && (
-                                <div className="mb-4">
-                                    <Message severity="error" text={error} />
-                                </div>
-                            )}
-
                             <div>
                                 <label htmlFor="email" className="block text-900 text-xl font-medium mb-2">
                                     Email
                                 </label>
-                                <InputText
-                                    id="email"
-                                    type="email"
-                                    placeholder="Email address"
-                                    className="w-full md:w-30rem mb-5"
-                                    style={{ padding: '1rem' }}
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
+                                <InputText id="email" type="email" placeholder="Email address" className="w-full md:w-30rem mb-5" style={{ padding: '1rem' }} value={email} onChange={(e) => setEmail(e.target.value)} required />
 
                                 <label htmlFor="password" className="block text-900 font-medium text-xl mb-2">
                                     Password
                                 </label>
-                                <Password
-                                    inputId="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Password"
-                                    toggleMask
-                                    className="w-full mb-5"
-                                    inputClassName="w-full p-3 md:w-30rem"
-                                    feedback={false}
-                                    required
-                                />
+                                <Password inputId="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" toggleMask className="w-full mb-5" inputClassName="w-full p-3 md:w-30rem" feedback={false} required />
 
-                                <div className="flex align-items-center justify-content-between mb-5 gap-5">
-                                    <div className="flex align-items-center">
-                                        <Checkbox inputId="rememberme1" checked={checked} onChange={(e) => setChecked(e.checked ?? false)} className="mr-2"></Checkbox>
-                                        <label htmlFor="rememberme1">Remember me</label>
-                                    </div>
-                                    <a className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
-                                        Forgot password?
-                                    </a>
+                                <div className="flex align-items-center justify-content-between gap-5">
+                                    {error && (
+                                        <div className="mb-4">
+                                            <Message severity="error" text={'Incorrect account or password.'} />
+                                        </div>
+                                    )}
                                 </div>
-                                <Button
-                                    type="submit"
-                                    label="Sign In"
-                                    className="w-full p-3 text-xl"
-                                    loading={isLoading}
-                                />
+                                <Button type="submit" label="Sign In" className="w-full p-3 text-xl" loading={isLoading} />
                             </div>
                         </form>
                     </div>

@@ -4,19 +4,16 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Menu } from 'primereact/menu';
-import { Calendar } from 'primereact/calendar';
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import dashboardApiRequest, { AllDashboardStatistics } from '@/api/dashboard';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-// Chart container style
 const chartContainerStyle: React.CSSProperties = {
     width: '100%',
     height: 300
 };
 
-// Status colors for charts
 const chartColors = {
     'PENDING': '#64B5F6',
     'PROCESSING': '#FFB74D',
@@ -28,7 +25,6 @@ const chartColors = {
     'REFUNDED': '#F06292'
 };
 
-// Format data for Recharts
 const generateChartData = (revenueByStatus: Record<string, number> | undefined) => {
     if (!revenueByStatus) {
         return [];
@@ -58,7 +54,6 @@ interface RecentOrder {
     username: string;
 }
 
-// CSS for order status badges
 const statusColors = {
     'PENDING': { background: '#BBDEFB', color: '#1565C0' },
     'PROCESSING': { background: '#FFE0B2', color: '#E65100' },
@@ -72,7 +67,6 @@ const statusColors = {
 
 const Dashboard = () => {
     const [loading, setLoading] = useState<boolean>(true);
-    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [dashboardStats, setDashboardStats] = useState<AllDashboardStatistics | null>(null);
     const [topProducts, setTopProducts] = useState<Product[]>([]);
     const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
@@ -97,25 +91,9 @@ const Dashboard = () => {
         }
     };
 
-    // Handle date range change
-    const handleDateRangeChange = (range: [Date | null, Date | null]) => {
-        setDateRange(range);
-        const [start, end] = range;
-
-        if (start && end) {
-            const startDateStr = start.toISOString().split('T')[0];
-            const endDateStr = end.toISOString().split('T')[0];
-            fetchDashboardData(startDateStr, endDateStr);
-        } else {
-            fetchDashboardData();
-        }
-    };
-
     useEffect(() => {
         fetchDashboardData();
     }, []);
-
-    // No need for theme-specific chart options with Recharts
 
     const formatCurrency = (value: number) => {
         return value?.toLocaleString('en-US', {
@@ -138,25 +116,6 @@ const Dashboard = () => {
             )}
 
             {!loading && (
-                <div className="col-12 mb-4">
-                    <div className="card">
-                        <div className="flex justify-content-between align-items-center mb-3">
-                            <h5 className="m-0">Dashboard Statistics</h5>
-                            <Calendar
-                                value={dateRange}
-                                onChange={(e) => handleDateRangeChange(e.value as [Date | null, Date | null])}
-                                selectionMode="range"
-                                readOnlyInput
-                                placeholder="Filter by date range"
-                                showIcon
-                                className="w-20rem"
-                            />
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {!loading && (
                 <>
                     <div className="col-12 lg:col-6 xl:col-3">
                         <div className="card mb-0">
@@ -173,11 +132,7 @@ const Dashboard = () => {
                             <span className="text-green-500 font-medium">{formatCurrency(dashboardStats?.sales.averageOrderValue || 0)}</span>
                         </div>
                     </div>
-                </>
-            )}
 
-            {!loading && (
-                <>
                     <div className="col-12 lg:col-6 xl:col-3">
                         <div className="card mb-0">
                             <div className="flex justify-content-between mb-3">
@@ -231,7 +186,11 @@ const Dashboard = () => {
                                 <Column field="orderNumber" header="Order #" sortable style={{ width: '20%' }} />
                                 <Column field="username" header="Customer" sortable style={{ width: '25%' }} />
                                 <Column field="total" header="Total" sortable style={{ width: '20%' }} body={(data) => formatCurrency(data.total)} />
-                                <Column field="status" header="Status" sortable style={{ width: '20%' }}
+                                <Column
+                                    field="status"
+                                    header="Status"
+                                    sortable
+                                    style={{ width: '20%' }}
                                     body={(data) => {
                                         const status = data.status as keyof typeof statusColors;
                                         const style = {
@@ -273,11 +232,9 @@ const Dashboard = () => {
                             </div>
                             <ul className="list-none p-0 m-0">
                                 {topProducts.map((product, index) => {
-                                    // Calculate percentage for progress bar (based on highest revenue product)
-                                    const maxRevenue = topProducts.length > 0 ? Math.max(...topProducts.map(p => p.revenue)) : 0;
+                                    const maxRevenue = topProducts.length > 0 ? Math.max(...topProducts.map((p) => p.revenue)) : 0;
                                     const percentage = maxRevenue > 0 ? Math.round((product.revenue / maxRevenue) * 100) : 0;
 
-                                    // Assign different colors based on index
                                     const colors = ['orange', 'cyan', 'pink', 'green', 'purple', 'teal', 'blue', 'yellow', 'indigo', 'red'];
                                     const colorIndex = index % colors.length;
                                     const color = colors[colorIndex];
@@ -297,9 +254,7 @@ const Dashboard = () => {
                                         </li>
                                     );
                                 })}
-                                {topProducts.length === 0 && (
-                                    <li className="text-center p-3">No product data available</li>
-                                )}
+                                {topProducts.length === 0 && <li className="text-center p-3">No product data available</li>}
                             </ul>
                         </div>
                     </div>
@@ -309,17 +264,11 @@ const Dashboard = () => {
                             <h5>Revenue by Order Status</h5>
                             <div style={chartContainerStyle}>
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart
-                                        data={generateChartData(dashboardStats?.sales.revenueByStatus)}
-                                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                                    >
+                                    <BarChart data={generateChartData(dashboardStats?.sales.revenueByStatus)} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <XAxis dataKey="name" />
                                         <YAxis />
-                                        <Tooltip
-                                            formatter={(value) => [`$${value}`, 'Revenue']}
-                                            labelFormatter={(label) => `Status: ${label}`}
-                                        />
+                                        <Tooltip formatter={(value) => [`$${value}`, 'Revenue']} labelFormatter={(label) => `Status: ${label}`} />
                                         <Legend />
                                         <Bar dataKey="value" name="Revenue" />
                                     </BarChart>
@@ -344,49 +293,54 @@ const Dashboard = () => {
                             </div>
 
                             <div className="grid">
-                                {dashboardStats?.orders.ordersByStatus && Object.entries(dashboardStats.orders.ordersByStatus).map(([status, count]) => {
-                                    // Define colors for different statuses
-                                    const statusColors: Record<string, string> = {
-                                        'PENDING': 'blue',
-                                        'PROCESSING': 'orange',
-                                        'SHIPPED': 'indigo',
-                                        'DELIVERED': 'teal',
-                                        'COMPLETED': 'green',
-                                        'CANCELLED': 'red',
-                                        'RETURNED': 'purple',
-                                        'REFUNDED': 'pink'
-                                    };
+                                {dashboardStats?.orders.ordersByStatus &&
+                                    Object.entries(dashboardStats.orders.ordersByStatus).map(([status, count]) => {
+                                        const statusColors: Record<string, string> = {
+                                            PENDING: 'blue',
+                                            PROCESSING: 'orange',
+                                            SHIPPED: 'indigo',
+                                            DELIVERED: 'teal',
+                                            COMPLETED: 'green',
+                                            CANCELLED: 'red',
+                                            RETURNED: 'purple',
+                                            REFUNDED: 'pink'
+                                        };
 
-                                    const color = statusColors[status] || 'gray';
-                                    const countValue = typeof count === 'number' ? count : 0;
+                                        const color = statusColors[status] || 'gray';
+                                        const countValue = typeof count === 'number' ? count : 0;
 
-                                    return (
-                                        <div key={status} className="col-12 md:col-6 mb-3">
-                                            <div className={`bg-${color}-100 p-3 border-round`}>
-                                                <div className="flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <span className="block text-500 font-medium mb-1">{status}</span>
-                                                        <div className={`text-${color}-500 font-medium text-xl`}>{countValue}</div>
-                                                    </div>
-                                                    <div className={`flex align-items-center justify-content-center bg-${color}-100 border-round`} style={{ width: '2.5rem', height: '2.5rem' }}>
-                                                        <i className={`pi pi-${status === 'COMPLETED' ? 'check-circle' :
-                                                            status === 'CANCELLED' ? 'times-circle' :
-                                                            status === 'SHIPPED' ? 'send' :
-                                                            status === 'DELIVERED' ? 'inbox' :
-                                                            status === 'PROCESSING' ? 'sync' :
-                                                            'shopping-cart'} text-${color}-500 text-xl`} />
+                                        return (
+                                            <div key={status} className="col-12 md:col-6 mb-3">
+                                                <div className={`bg-${color}-100 p-3 border-round`}>
+                                                    <div className="flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span className="block text-500 font-medium mb-1">{status}</span>
+                                                            <div className={`text-${color}-500 font-medium text-xl`}>{countValue}</div>
+                                                        </div>
+                                                        <div className={`flex align-items-center justify-content-center bg-${color}-100 border-round`} style={{ width: '2.5rem', height: '2.5rem' }}>
+                                                            <i
+                                                                className={`pi pi-${
+                                                                    status === 'COMPLETED'
+                                                                        ? 'check-circle'
+                                                                        : status === 'CANCELLED'
+                                                                        ? 'times-circle'
+                                                                        : status === 'SHIPPED'
+                                                                        ? 'send'
+                                                                        : status === 'DELIVERED'
+                                                                        ? 'inbox'
+                                                                        : status === 'PROCESSING'
+                                                                        ? 'sync'
+                                                                        : 'shopping-cart'
+                                                                } text-${color}-500 text-xl`}
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
 
-                                {(!dashboardStats?.orders.ordersByStatus || Object.keys(dashboardStats.orders.ordersByStatus).length === 0) && (
-                                    <div className="col-12 text-center p-3">
-                                        No order status data available
-                                    </div>
-                                )}
+                                {(!dashboardStats?.orders.ordersByStatus || Object.keys(dashboardStats.orders.ordersByStatus).length === 0) && <div className="col-12 text-center p-3">No order status data available</div>}
                             </div>
                         </div>
 
@@ -396,13 +350,7 @@ const Dashboard = () => {
                             </div>
 
                             <ul className="p-0 mx-0 mt-0 mb-4 list-none">
-                                {dashboardStats?.customers.topCustomers.map((customer: {
-                                    id: number;
-                                    username: string;
-                                    email: string;
-                                    totalSpent: number;
-                                    ordersCount: number;
-                                }) => (
+                                {dashboardStats?.customers.topCustomers.map((customer: { id: number; username: string; email: string; totalSpent: number; ordersCount: number }) => (
                                     <li key={customer.id} className="flex align-items-center py-2 border-bottom-1 surface-border">
                                         <div className="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
                                             <i className="pi pi-user text-xl text-blue-500" />
@@ -418,11 +366,7 @@ const Dashboard = () => {
                                     </li>
                                 ))}
 
-                                {(!dashboardStats?.customers.topCustomers || dashboardStats.customers.topCustomers.length === 0) && (
-                                    <li className="text-center p-3">
-                                        No customer data available
-                                    </li>
-                                )}
+                                {(!dashboardStats?.customers.topCustomers || dashboardStats.customers.topCustomers.length === 0) && <li className="text-center p-3">No customer data available</li>}
                             </ul>
                         </div>
                     </div>

@@ -1,5 +1,4 @@
 'use client';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Ripple } from 'primereact/ripple';
 import { classNames } from 'primereact/utils';
@@ -25,22 +24,18 @@ const AppMenuitem = (props: AppMenuItemProps) => {
 
     useEffect(() => {
         onRouteChange(pathname);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pathname, searchParams]);
 
     const itemClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        //avoid processing disabled items
         if (item!.disabled) {
             event.preventDefault();
             return;
         }
 
-        //execute command
         if (item!.command) {
             item!.command({ originalEvent: event, item: item });
         }
 
-        // toggle active state
         if (item!.items) setActiveMenu(active ? (props.parentKey as string) : key);
         else setActiveMenu(key);
     };

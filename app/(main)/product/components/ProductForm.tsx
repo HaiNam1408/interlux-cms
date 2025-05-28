@@ -54,20 +54,7 @@ const ProductForm = (props: ProductFormProps) => {
         fileUploadRef
     } = props;
 
-    const router = useRouter();
     const editorRef = useRef<any>(null);
-
-    const navigateToAttributes = () => {
-        if (product.id) {
-            router.push(`/product/${product.id}/attribute`);
-        }
-    };
-
-    const navigateToVariations = () => {
-        if (product.id) {
-            router.push(`/product/${product.id}/variation`);
-        }
-    };
 
     return (
         <Sidebar visible={visible} onHide={onHide} fullScreen>

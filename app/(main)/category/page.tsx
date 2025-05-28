@@ -13,6 +13,7 @@ import {
     DeleteDialogs
 } from './components';
 import { DataTable } from 'primereact/datatable';
+import slugify from 'slugify';
 
 const Category = () => {
     const emptyCategory: CategoryType = {
@@ -103,10 +104,17 @@ const Category = () => {
     };
 
     const generateSlug = (name: string) => {
-        return name
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '');
+        const withoutAccents = name
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D');
+
+        return slugify(withoutAccents, {
+            lower: true,
+            strict: true,
+            trim: true
+        });
     };
 
     const handleImageUpload = (file: File) => {
@@ -278,7 +286,7 @@ const Category = () => {
         _category[name] = val;
 
         // Auto-generate slug when name changes
-        if (name === 'name' && !_category.slug) {
+        if (name === 'name') {
             _category.slug = generateSlug(val);
         }
 
@@ -313,101 +321,6 @@ const Category = () => {
         setCategoryDialog(true);
     };
 
-    const onDragEnd = (result: DropResult, parentId: number) => {
-        if (!result.destination) {
-            return;
-        }
-
-        // Find the parent category
-        const parentCategory = categories.find((cat) => cat.id === parentId);
-        if (!parentCategory || !parentCategory.children) {
-            return;
-        }
-
-        // Clone the children array
-        const childrenCopy = [...parentCategory.children];
-
-        // Get the moved item
-        const [reorderedItem] = childrenCopy.splice(result.source.index, 1);
-
-        // Insert it at the new position
-        childrenCopy.splice(result.destination.index, 0, reorderedItem);
-
-        // Update the sort order
-        const updatedChildren = childrenCopy.map((child, index) => ({
-            ...child,
-            sort: index + 1
-        }));
-
-        // Create update promises
-        const updatePromises = updatedChildren.map((child) => CategoryService.updateCategory(child.id, { ...child, sort: child.sort }));
-
-        // Execute all updates
-        Promise.all(updatePromises)
-            .then(() => {
-                toast.current?.show({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Category Order Updated',
-                    life: 3000
-                });
-                loadCategories();
-            })
-            .catch((error) => {
-                toast.current?.show({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: `Failed to update category order: ${error.message}`,
-                    life: 3000
-                });
-            });
-    };
-
-    const onParentDragEnd = (result: DropResult) => {
-        if (!result.destination) {
-            return;
-        }
-
-        // Clone the categories array
-        const categoriesCopy = [...categories];
-
-        // Get the moved item
-        const [reorderedItem] = categoriesCopy.splice(result.source.index, 1);
-
-        // Insert it at the new position
-        categoriesCopy.splice(result.destination.index, 0, reorderedItem);
-
-        // Update the sort order
-        const updatedCategories = categoriesCopy.map((cat, index) => ({
-            ...cat,
-            sort: index + 1
-        }));
-
-        // Create update promises
-        const updatePromises = updatedCategories.map((cat) => CategoryService.updateCategory(cat.id, { ...cat, sort: cat.sort }));
-
-        // Execute all updates
-        Promise.all(updatePromises)
-            .then(() => {
-                toast.current?.show({
-                    severity: 'success',
-                    summary: 'Successful',
-                    detail: 'Category Order Updated',
-                    life: 3000
-                });
-                loadCategories();
-            })
-            .catch((error) => {
-                toast.current?.show({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: `Failed to update category order: ${error.message}`,
-                    life: 3000
-                });
-            });
-    };
-
-    // Handle pagination change
     const onPage = (event: any) => {
         setFirst(event.first);
         setRows(event.rows);
@@ -445,8 +358,6 @@ const Category = () => {
                         onGlobalFilterChange={(e) => setGlobalFilter(e.target.value)}
                         editCategory={editCategory}
                         confirmDeleteCategory={confirmDeleteCategory}
-                        onParentDragEnd={onParentDragEnd}
-                        onDragEnd={onDragEnd}
                         editChildCategory={editChildCategory}
                     />
 
