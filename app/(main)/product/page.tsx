@@ -20,6 +20,7 @@ import {
     DeleteProductsDialog
 } from './components';
 import { generateSlug } from '@/lib/utils';
+import { useDebounce } from 'use-debounce';
 
 const ProductPage = () => {
     let emptyProduct: Product = {
@@ -49,6 +50,7 @@ const ProductPage = () => {
     const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
+    const [searchText] = useDebounce(globalFilter, 300);
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
     const fileUploadRef = useRef<FileUpload>(null);
@@ -63,14 +65,14 @@ const ProductPage = () => {
     const [removeModel, setRemoveModel] = useState<boolean>(false);
 
     useEffect(() => {
-        loadProducts();
+        loadProducts(searchText.trim());
         loadCategories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPage, rows]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPage, rows, searchText]);
 
-    const loadProducts = () => {
+    const loadProducts = (search?: string) => {
         setLoading(true);
-        ProductApiService.getProducts(currentPage, rows)
+        ProductApiService.getProducts(currentPage, rows, { search })
             .then((response: PaginatedData<Product> | null) => {
                 if (response) {
                     setProducts(response.data);
@@ -99,8 +101,6 @@ const ProductPage = () => {
             setCategories(data);
         });
     };
-
-
 
     const openNew = () => {
         setProduct(emptyProduct);

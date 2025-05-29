@@ -154,14 +154,13 @@ const CategoryList: React.FC<CategoryListProps> = ({
             globalFilter={globalFilter}
             emptyMessage="No categories found."
             header={header}
-            responsiveLayout="scroll"
         >
             <Column expander={(props) => props.children?.length} style={{ width: '3rem' }} />
             <Column selectionMode="multiple" headerStyle={{ width: '3rem' }} />
-            <Column field="id" header="ID" sortable body={idBodyTemplate} headerStyle={{ minWidth: '5rem' }} />
-            <Column field="name" header="Name" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '14rem' }} />
-            <Column field="slug" header="Slug" sortable body={slugBodyTemplate} headerStyle={{ minWidth: '14rem' }} />
-            <Column field="sort" header="Sort Order" sortable body={sortBodyTemplate} headerStyle={{ minWidth: '10rem' }} />
+            <Column field="id" header="ID" body={idBodyTemplate} headerStyle={{ minWidth: '5rem' }} />
+            <Column field="name" header="Name" body={nameBodyTemplate} headerStyle={{ minWidth: '14rem' }} />
+            <Column field="slug" header="Slug" body={slugBodyTemplate} headerStyle={{ minWidth: '14rem' }} />
+            <Column field="sort" header="Sort Order" body={sortBodyTemplate} headerStyle={{ minWidth: '10rem' }} />
             <Column field="image" header="Image" body={imageBodyTemplate} headerStyle={{ minWidth: '10rem' }} />
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }} />
         </DataTable>

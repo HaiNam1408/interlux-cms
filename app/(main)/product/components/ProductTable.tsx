@@ -36,8 +36,7 @@ const ProductTable = (props: ProductTableProps) => {
         setGlobalFilter,
         onEdit,
         onDelete,
-        dt,
-        exportCSV
+        dt
     } = props;
 
     const formatCurrency = (value: number) => {
@@ -93,7 +92,6 @@ const ProductTable = (props: ProductTableProps) => {
     };
 
     const statusBodyTemplate = (rowData: Product) => {
-        // Ensure status is available and convert to string if needed
         const status = rowData.status ? rowData.status.toString() : 'UNKNOWN';
 
         return (
@@ -123,25 +121,6 @@ const ProductTable = (props: ProductTableProps) => {
                     }}
                 />
             </div>
-        );
-    };
-
-    const leftToolbarTemplate = () => {
-        return (
-            <React.Fragment>
-                <div className="my-2">
-                    <Button label="New" icon="pi pi-plus" severity="success" className="mr-2" onClick={() => onEdit(null as any)} />
-                    <Button label="Delete" icon="pi pi-trash" severity="danger" onClick={() => onDelete(null as any)} disabled={!selectedProducts || selectedProducts.length === 0} />
-                </div>
-            </React.Fragment>
-        );
-    };
-
-    const rightToolbarTemplate = () => {
-        return (
-            <React.Fragment>
-                <Button label="Export" icon="pi pi-upload" severity="help" onClick={exportCSV} />
-            </React.Fragment>
         );
     };
 
@@ -179,12 +158,12 @@ const ProductTable = (props: ProductTableProps) => {
             header={header}
         >
             <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-            <Column field="id" header="ID" sortable body={idBodyTemplate} headerStyle={{ minWidth: '5rem' }}></Column>
-            <Column field="title" header="Title" sortable body={titleBodyTemplate} headerStyle={{ minWidth: '14rem' }}></Column>
-            <Column field="slug" header="Slug" sortable body={slugBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-            <Column field="price" header="Price" sortable body={priceBodyTemplate} headerStyle={{ minWidth: '8rem' }}></Column>
-            <Column field="categoryId" header="Category" sortable body={categoryBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-            <Column field="status" header="Status" sortable body={statusBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+            <Column field="id" header="ID" body={idBodyTemplate} headerStyle={{ minWidth: '5rem' }}></Column>
+            <Column field="title" header="Title" body={titleBodyTemplate} headerStyle={{ minWidth: '14rem' }}></Column>
+            <Column field="slug" header="Slug" body={slugBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+            <Column field="price" header="Price" body={priceBodyTemplate} headerStyle={{ minWidth: '8rem' }}></Column>
+            <Column field="categoryId" header="Category" body={categoryBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+            <Column field="status" header="Status" body={statusBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: '8rem' }}></Column>
         </DataTable>
     );
