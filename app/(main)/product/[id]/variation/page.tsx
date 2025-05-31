@@ -53,7 +53,6 @@ const ProductVariationPage = () => {
     const [productVariation, setProductVariation] = useState<ProductVariation>(emptyProductVariation);
     const [selectedVariations, setSelectedVariations] = useState<ProductVariation[]>([]);
     const [submitted, setSubmitted] = useState(false);
-    const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
     const fileUploadRef = useRef<FileUpload>(null);
@@ -596,8 +595,6 @@ const ProductVariationPage = () => {
                         first={first}
                         rows={rows}
                         onPage={onPage}
-                        globalFilter={globalFilter}
-                        setGlobalFilter={setGlobalFilter}
                         onEdit={editProductVariation}
                         onDelete={confirmDeleteVariation}
                         dt={dt}

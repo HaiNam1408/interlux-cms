@@ -14,8 +14,6 @@ interface ProductVariationTableProps {
     first: number;
     rows: number;
     onPage: (e: any) => void;
-    globalFilter: string;
-    setGlobalFilter: (value: string) => void;
     onEdit: (variation: ProductVariation) => void;
     onDelete: (variation: ProductVariation) => void;
     dt: React.RefObject<DataTable<any>>;
@@ -32,8 +30,6 @@ const ProductVariationTable = (props: ProductVariationTableProps) => {
         first,
         rows,
         onPage,
-        globalFilter,
-        setGlobalFilter,
         onEdit,
         onDelete,
         dt
@@ -42,14 +38,6 @@ const ProductVariationTable = (props: ProductVariationTableProps) => {
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
             <h5 className="m-0">Manage Product Variations</h5>
-            <span className="block mt-2 md:mt-0 p-input-icon-left">
-                <i className="pi pi-search" />
-                <InputText
-                    type="search"
-                    onInput={(e) => setGlobalFilter((e.target as HTMLInputElement).value)}
-                    placeholder="Search..."
-                />
-            </span>
         </div>
     );
 
@@ -93,15 +81,9 @@ const ProductVariationTable = (props: ProductVariationTableProps) => {
     };
 
     const attributeValuesBodyTemplate = (rowData: ProductVariation) => {
-        // Handle case where attributeValues is missing or empty
         if (!rowData.attributeValues || rowData.attributeValues.length === 0) {
             return <span>No values</span>;
         }
-
-        // Find attribute values that have attributeValueId but no attributeValue object
-        const incompleteValues = rowData.attributeValues.filter(
-            value => !value.attributeValue && value.attributeValueId
-        );
 
         return (
             <div className="flex flex-wrap gap-1">
@@ -131,13 +113,11 @@ const ProductVariationTable = (props: ProductVariationTableProps) => {
             className="datatable-responsive"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} variations"
-            globalFilter={globalFilter}
             emptyMessage="No product variations found."
             header={header}
             tableStyle={{ minWidth: '50rem' }}
             loading={loading}
             totalRecords={totalRecords}
-            lazy
             first={first}
             onPage={onPage}
         >
