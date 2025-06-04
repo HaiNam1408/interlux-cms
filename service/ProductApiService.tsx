@@ -13,18 +13,11 @@ export const ProductApiService = {
 
             const response = await http.get<any>('/product', { params: queryParams });
             if (response.data) {
-                if (response.data.data && response.data.data.data) {
-                    const result = {
-                        data: response.data.data.data || [],
-                        meta: response.data.data.meta || { total: 0, page: 1, limit: 10, totalPages: 1 }
-                    };                    return result;
-                }
-                else if (Array.isArray(response.data.data)) {
-                    const result = {
-                        data: response.data.data || [],
-                        meta: response.data.meta || { total: 0, page: 1, limit: 10, totalPages: 1 }
-                    };                    return result;
-                }
+                const result = {
+                    data: response.data.data || [],
+                    meta: response.data.meta || { total: 0, page: 1, limit: 10, totalPages: 1 }
+                };
+                return result;
             }
 
             return null;

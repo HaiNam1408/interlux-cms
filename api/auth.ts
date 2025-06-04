@@ -54,10 +54,6 @@ const authService = {
                 data
             );
 
-            if (!response.data || !response.data.accessToken) {
-                throw new Error('Invalid response format');
-            }
-
             const { accessToken } = response.data;
             const user = parseJwtToken(accessToken);
             localStorage.setItem('token', accessToken);
@@ -68,13 +64,8 @@ const authService = {
 
             return { user, token: accessToken };
         } catch (error: any) {
-            if (error.response && error.response.data) {
-                throw new Error(error.response.data.message || 'Login failed');
-            } else if (error.message) {
-                throw new Error(error.message);
-            } else {
-                throw new Error('An unexpected error occurred during login');
-            }
+            console.error("Auth service login error:", error);
+            throw error;
         }
     },
 

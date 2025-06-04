@@ -1,12 +1,5 @@
 import http from '@/lib/http';
-import {
-    ProductAttribute,
-    ProductAttributeValue,
-    CreateProductAttributeDto,
-    UpdateProductAttributeDto,
-    CreateProductAttributeValueDto,
-    UpdateProductAttributeValueDto
-} from '@/types/product';
+import { ProductAttribute, ProductAttributeValue, CreateProductAttributeDto, UpdateProductAttributeDto, CreateProductAttributeValueDto, UpdateProductAttributeValueDto } from '@/types/product';
 import { PaginatedData } from '@/types/response';
 
 export const ProductAttributeApiService = {
@@ -15,26 +8,11 @@ export const ProductAttributeApiService = {
             const response = await http.get<any>(`/product/${productId}/attribute`, {
                 params: { page, limit }
             });
-            if (response.data) {// Check if the response has a nested data.data structure (common in some APIs)
-                if (response.data.data && response.data.data.data) {
-                    return {
-                        data: response.data.data.data || [],
-                        meta: response.data.data.meta || { total: 0, page: 1, limit: 10, totalPages: 1 }
-                    };
-                }
-                else if (Array.isArray(response.data.data)) {
-                    return {
-                        data: response.data.data || [],
-                        meta: response.data.meta || { total: 0, page: 1, limit: 10, totalPages: 1 }
-                    };
-                }
-                // If response.data itself is an array (some APIs return direct array)
-                else if (Array.isArray(response.data)) {
-                    return {
-                        data: response.data || [],
-                        meta: { total: response.data.length, page: 1, limit: 10, totalPages: 1 }
-                    };
-                }
+            if (response.data) {
+                return {
+                    data: response.data || [],
+                    meta: { total: response.data.length, page: 1, limit: 10, totalPages: 1 }
+                };
             }
 
             return {
@@ -107,26 +85,10 @@ export const ProductAttributeApiService = {
             });
 
             if (response.data) {
-                if (response.data.data && response.data.data.data) {
-                    return {
-                        data: response.data.data.data || [],
-                        meta: response.data.data.meta || { total: 0, page: 1, limit: 10, totalPages: 1 }
-                    };
-                }
-                // Check if response.data.data is an array (common structure)
-                else if (Array.isArray(response.data.data)) {
-                    return {
-                        data: response.data.data || [],
-                        meta: response.data.meta || { total: 0, page: 1, limit: 10, totalPages: 1 }
-                    };
-                }
-                // If response.data itself is an array (some APIs return direct array)
-                else if (Array.isArray(response.data)) {
-                    return {
-                        data: response.data || [],
-                        meta: { total: response.data.length, page: 1, limit: 10, totalPages: 1 }
-                    };
-                }
+                return {
+                    data: response.data || [],
+                    meta: { total: response.data.length, page: 1, limit: 10, totalPages: 1 }
+                };
             }
 
             return {

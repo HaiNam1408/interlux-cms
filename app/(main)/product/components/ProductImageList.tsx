@@ -17,27 +17,10 @@ const ProductImageList = ({ product, onImageDelete }: ProductImageListProps) => 
             <label>Current Images</label>
             <div className="grid">
                 {product.images.map((image, index) => {
-                    // Handle different image formats
-                    let imagePath = '';
-                    let fileName = '';
+                    let imagePath = image.filePath;
+                    let fileName = image.fileName;
 
-                    if (typeof image === 'string') {
-                        imagePath = image;
-                        fileName = `image${index}.jpg`;
-                    } else if (image && typeof image === 'object') {
-                        // Handle API response format with filePath
-                        if (image.filePath) {
-                            imagePath = image.filePath;
-                            fileName = image.fileName || `image${index}.jpg`;
-                        }
-                        // Handle other object formats
-                        else {
-                            imagePath = (image as any).url || '';
-                            fileName = (image as any).name || `image${index}.jpg`;
-                        }
-                    }
-
-                    if (!imagePath) return null;
+                    if (!imagePath || !fileName) return null;
 
                     return (
                         <div key={index} className="col-6 relative">

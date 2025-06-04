@@ -1,9 +1,5 @@
 import http from '@/lib/http';
-import {
-    ProductVariation,
-    CreateProductVariationDto,
-    UpdateProductVariationDto
-} from '@/types/product';
+import { ProductVariation, CreateProductVariationDto, UpdateProductVariationDto } from '@/types/product';
 import { PaginatedData } from '@/types/response';
 
 export const ProductVariationApiService = {
@@ -13,27 +9,10 @@ export const ProductVariationApiService = {
                 params: { page, limit }
             });
             if (response.data) {
-                // Check if the response has a nested data.data structure (common in some APIs)
-                if (response.data.data && response.data.data.data) {
-                    return {
-                        data: response.data.data.data || [],
-                        meta: response.data.data.meta || { total: 0, page: 1, limit: 10, totalPages: 1 }
-                    };
-                }
-                // Check if response.data.data is an array (common structure)
-                else if (Array.isArray(response.data.data)) {
-                    return {
-                        data: response.data.data || [],
-                        meta: response.data.meta || { total: 0, page: 1, limit: 10, totalPages: 1 }
-                    };
-                }
-                // If response.data itself is an array (some APIs return direct array)
-                else if (Array.isArray(response.data)) {
-                    return {
-                        data: response.data || [],
-                        meta: { total: response.data.length, page: 1, limit: 10, totalPages: 1 }
-                    };
-                }
+                return {
+                    data: response.data || [],
+                    meta: { total: response.data.length, page: 1, limit: 10, totalPages: 1 }
+                };
             }
 
             return {
@@ -52,11 +31,7 @@ export const ProductVariationApiService = {
         try {
             const response = await http.get<any>(`/product/${productId}/variation/${variationId}`);
 
-            if (response.data && response.data.data) {
-                const variation = response.data.data;
-
-                return variation;
-            } else if (response.data) {
+            if (response.data) {
                 const variation = response.data;
                 return variation;
             }

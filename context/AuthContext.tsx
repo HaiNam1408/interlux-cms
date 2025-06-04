@@ -3,7 +3,6 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useRouter } from 'next/navigation';
 import authService, { UserProfile } from '@/api/auth';
 
-// Define the Authentication Context type
 interface AuthContextType {
     user: UserProfile | null;
     isAuthenticated: boolean;
@@ -13,10 +12,9 @@ interface AuthContextType {
     error: string | null;
 }
 
-// Create the Authentication Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Define the Authentication Provider props
+// Authentication Provider props
 interface AuthProviderProps {
     children: ReactNode;
 }
@@ -43,6 +41,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setError(null);
         try {
             const { user: loggedInUser } = await authService.login({ email, password });
+            if(!loggedInUser) {
+                throw new Error('Failed to login');
+            }
             setUser(loggedInUser);
 
             router.push('/');

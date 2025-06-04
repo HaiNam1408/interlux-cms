@@ -42,18 +42,18 @@ axiosInstance.interceptors.request.use(
 );
 
 axiosInstance.interceptors.response.use(
-    (response) => {
-        return response;
-    },
+    (response) => response,
     (error) => {
-        if (error.response && error.response.status === 401) {
-            if (typeof window !== 'undefined') {
-                localStorage.removeItem('token');
-                localStorage.removeItem('refreshToken');
-                window.location.href = '/auth/login';
-            }
+        if (
+            error.response &&
+            error.response.status === 401 &&
+            typeof window !== 'undefined' &&
+            !window.location.pathname.includes('/auth/login')
+        ) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('refreshToken');
+            window.location.href = '/auth/login';
         }
-        
         return Promise.reject(error);
     }
 );
