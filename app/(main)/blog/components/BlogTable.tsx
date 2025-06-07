@@ -119,8 +119,7 @@ export const BlogTable = (props: BlogTableProps) => {
     const header = (
         <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
             <h4 className="m-0">Manage Blog Posts</h4>
-            <span className="p-input-icon-left">
-                <i className="pi pi-search" />
+            <span>
                 <InputText
                     type="search"
                     value={globalFilter}

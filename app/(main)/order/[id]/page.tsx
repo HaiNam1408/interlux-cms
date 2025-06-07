@@ -14,10 +14,9 @@ import {
     ShippingAddressInfo,
     OrderItemsTable,
     OrderSummary,
-    OrderStatusHistory,
     OrderNotFound,
     OrderDetailSkeleton
-} from '../components/OrderDetailComponents';
+} from './components';
 
 const OrderDetailsPage = () => {
     const { id } = useParams();
@@ -97,11 +96,7 @@ const OrderDetailsPage = () => {
         <div>
             <Toast ref={toast} />
 
-            <OrderHeader
-                order={order}
-                loading={loading}
-                onUpdateStatus={openUpdateStatusDialog}
-            />
+            <OrderHeader order={order} loading={loading} onUpdateStatus={openUpdateStatusDialog} />
 
             {loading ? (
                 <OrderDetailSkeleton />
@@ -127,10 +122,6 @@ const OrderDetailsPage = () => {
 
                             <OrderItemsTable items={order.items} />
 
-                            <Divider />
-
-                            <OrderSummary total={order.total} />
-
                             {order.notes && (
                                 <>
                                     <Divider />
@@ -144,24 +135,17 @@ const OrderDetailsPage = () => {
                     </div>
 
                     <div className="col-12 lg:col-4">
-                        <OrderStatusHistory
-                            statusHistory={order.statusHistory}
-                            formatDate={formatDate}
-                        />
+                        <Card>
+                            <h3>Order Summary</h3>
+                            <OrderSummary order={order} />
+                        </Card>
                     </div>
                 </div>
             ) : (
                 <OrderNotFound />
             )}
 
-            {order && (
-                <UpdateOrderStatusDialog
-                    visible={updateStatusDialog}
-                    order={order}
-                    onHide={hideUpdateStatusDialog}
-                    onUpdateStatus={updateOrderStatus}
-                />
-            )}
+            {order && <UpdateOrderStatusDialog visible={updateStatusDialog} order={order} onHide={hideUpdateStatusDialog} onUpdateStatus={updateOrderStatus} />}
         </div>
     );
 };

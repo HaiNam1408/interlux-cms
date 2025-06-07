@@ -107,7 +107,7 @@ const Dashboard = () => {
             {loading && (
                 <div className="col-12">
                     <div className="card">
-                        <div className="flex justify-content-center align-items-center" style={{ height: '200px' }}>
+                        <div className="flex justify-content-center align-items-center" style={{ height: '76vh' }}>
                             <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem' }}></i>
                             <span className="font-medium ml-2">Loading dashboard data...</span>
                         </div>

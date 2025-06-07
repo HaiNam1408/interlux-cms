@@ -1,3 +1,5 @@
+import { Product } from "./product";
+
 export enum OrderStatus {
     PENDING = 'PENDING',
     PROCESSING = 'PROCESSING',
@@ -11,12 +13,7 @@ export enum OrderStatus {
 export interface OrderItem {
     id: number;
     productId: number;
-    productName: string;
-    productImage?: {
-        type: string;
-        fileName: string;
-        filePath: string;
-    };
+    product: Product;
     quantity: number;
     price: number;
     total: number;
@@ -35,6 +32,9 @@ export interface Order {
     };
     items: OrderItem[];
     status: OrderStatus;
+    subtotal: number;
+    shippingFee: number;
+    discount: number;
     total: number;
     shippingAddress: string;
     paymentMethod: string;
