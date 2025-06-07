@@ -10,9 +10,6 @@ interface OrderStatisticsPanelProps {
 }
 
 const OrderStatisticsPanel: React.FC<OrderStatisticsPanelProps> = ({ statistics, loading }) => {
-    const formatCurrency = (value: number) => {
-        return formatCurrency(value);
-    };
 
     const statCards = [
         {

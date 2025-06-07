@@ -44,10 +44,6 @@ const CouponTable: React.FC<CouponTableProps> = ({
         return new Date(date).toLocaleString();
     };
 
-    const formatCurrency = (value: number) => {
-        return formatCurrency(value);
-    };
-
     const typeBodyTemplate = (rowData: Coupon) => {
         return (
             <span>

@@ -96,10 +96,6 @@ const Dashboard = () => {
         fetchDashboardData();
     }, []);
 
-    const formatCurrency = (value: number) => {
-        return formatCurrency(value);
-    };
-
     return (
         <div className="grid">
             {loading && (

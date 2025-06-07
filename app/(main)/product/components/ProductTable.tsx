@@ -3,7 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { Product, ProductStatus } from '@/types/product';
+import { Product } from '@/types/product';
 import { formatCurrency } from '@/lib/utils';
 
 interface ProductTableProps {
@@ -39,10 +39,6 @@ const ProductTable = (props: ProductTableProps) => {
         onDelete,
         dt
     } = props;
-
-    const formatCurrency = (value: number) => {
-        return formatCurrency(value);
-    };
 
     const idBodyTemplate = (rowData: Product) => {
         return (
