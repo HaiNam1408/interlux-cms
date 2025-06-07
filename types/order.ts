@@ -37,20 +37,18 @@ export interface Order {
     discount: number;
     total: number;
     shippingAddress: string;
-    paymentMethod: string;
-    paymentStatus: 'PAID' | 'UNPAID';
     notes?: string;
     createdAt: string;
     updatedAt: string;
-    statusHistory?: OrderStatusHistory[];
+    payment: Payment;
 }
 
-export interface OrderStatusHistory {
+export interface Payment {
     id: number;
     orderId: number;
-    status: OrderStatus;
-    note?: string;
-    createdAt: string;
+    amount: number;
+    method: string;
+    status: string;
 }
 
 export interface OrderStatistics {

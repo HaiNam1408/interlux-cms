@@ -7,6 +7,7 @@ import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { Coupon, CouponType } from '@/types/coupon';
 import { CommonStatus } from '@/types/product';
+import { formatCurrency } from '@/lib/utils';
 
 interface CouponTableProps {
     coupons: Coupon[];
@@ -44,10 +45,7 @@ const CouponTable: React.FC<CouponTableProps> = ({
     };
 
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        }).format(value);
+        return formatCurrency(value);
     };
 
     const typeBodyTemplate = (rowData: Coupon) => {

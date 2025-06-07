@@ -15,10 +15,10 @@ const OrderInfo: React.FC<OrderInfoProps> = ({ order, formatDate }) => {
                     <span className="font-semibold">Date:</span> {formatDate(order.createdAt)}
                 </div>
                 <div>
-                    <span className="font-semibold">Payment Method:</span> {order.paymentMethod}
+                    <span className="font-semibold">Payment Method:</span> {order.payment.method}
                 </div>
                 <div>
-                    <span className="font-semibold">Payment Status:</span> {order.paymentStatus}
+                    <span className="font-semibold">Payment Status:</span> {order.payment.status}
                 </div>
             </div>
         </div>

@@ -6,6 +6,7 @@ import { InputText } from 'primereact/inputtext';
 import { Order } from '@/types/order';
 import OrderStatusBadge from './OrderStatusBadge';
 import { useRouter } from 'next/navigation';
+import { formatCurrency } from '@/lib/utils';
 
 interface OrderTableProps {
     orders: Order[];
@@ -72,7 +73,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
         return (
             <>
                 <span className="p-column-title">Total</span>
-                ${order.total.toFixed(2)}
+                {formatCurrency(order.total)}
             </>
         );
     };

@@ -8,6 +8,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import dashboardApiRequest, { AllDashboardStatistics } from '@/api/dashboard';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { formatCurrency } from '@/lib/utils';
 
 const chartContainerStyle: React.CSSProperties = {
     width: '100%',
@@ -96,10 +97,7 @@ const Dashboard = () => {
     }, []);
 
     const formatCurrency = (value: number) => {
-        return value?.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        });
+        return formatCurrency(value);
     };
 
     return (
@@ -141,7 +139,7 @@ const Dashboard = () => {
                                     <div className="text-900 font-medium text-xl">{formatCurrency(dashboardStats?.sales.totalRevenue || 0)}</div>
                                 </div>
                                 <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                    <i className="pi pi-dollar text-orange-500 text-xl" />
+                                    <i className="pi pi-money-bill text-orange-500 text-xl" />
                                 </div>
                             </div>
                             <span className="text-500 font-medium">From </span>

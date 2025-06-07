@@ -4,6 +4,7 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { ProductVariation } from '@/types/product';
+import { formatCurrency } from '@/lib/utils';
 
 interface ProductVariationTableProps {
     productVariations: ProductVariation[];
@@ -70,10 +71,7 @@ const ProductVariationTable = (props: ProductVariationTableProps) => {
     };
 
     const priceBodyTemplate = (rowData: ProductVariation) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        }).format(rowData.price || 0);
+        return formatCurrency(rowData.price || 0);
     };
 
     const defaultBodyTemplate = (rowData: ProductVariation) => {

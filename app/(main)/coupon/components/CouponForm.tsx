@@ -227,13 +227,16 @@ const CouponForm: React.FC<CouponFormProps> = ({ visible, coupon, onHide, onSave
 
             <div className="field">
                 <label htmlFor="value">
-                    {formData.type === CouponType.PERCENTAGE ? 'Percentage (%)' : 'Amount'}
+                    {formData.type === CouponType.PERCENTAGE ? 'Percentage (%)' : 'Amount (VND)'}
                 </label>
                 <InputNumber
                     id="value"
                     value={formData.value}
                     onValueChange={(e) => onInputNumberChange(e, 'value')}
-                    mode="decimal"
+                    mode={formData.type === CouponType.PERCENTAGE ? "decimal" : "currency"}
+                    currency={formData.type === CouponType.PERCENTAGE ? undefined : "VND"}
+                    locale={formData.type === CouponType.PERCENTAGE ? undefined : "vi-VN"}
+                    suffix={formData.type === CouponType.PERCENTAGE ? "%" : undefined}
                     min={0}
                     max={formData.type === CouponType.PERCENTAGE ? 100 : undefined}
                     className={classNames({ 'p-invalid': submitted && validationErrors.value })}
@@ -249,7 +252,9 @@ const CouponForm: React.FC<CouponFormProps> = ({ visible, coupon, onHide, onSave
                     id="minPurchase"
                     value={formData.minPurchase}
                     onValueChange={(e) => onInputNumberChange(e, 'minPurchase')}
-                    mode="decimal"
+                    mode="currency"
+                    currency="VND"
+                    locale="vi-VN"
                     min={0}
                 />
             </div>

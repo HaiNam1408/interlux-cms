@@ -5,6 +5,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Customer, CustomerOrder } from '@/types/customer';
 import { CustomerApiService } from '@/service/CustomerApiService';
+import { formatCurrency } from '@/lib/utils';
 
 interface CustomerOrdersDialogProps {
     visible: boolean;
@@ -65,7 +66,7 @@ const CustomerOrdersDialog: React.FC<CustomerOrdersDialogProps> = ({ visible, cu
         return (
             <>
                 <span className="p-column-title">Total</span>
-                ${order.total.toFixed(2)}
+                {formatCurrency(order.total)}
             </>
         );
     };

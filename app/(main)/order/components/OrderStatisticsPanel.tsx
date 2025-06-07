@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from 'primereact/card';
 import { OrderStatistics, OrderStatus } from '@/types/order';
 import { Skeleton } from 'primereact/skeleton';
+import { formatCurrency } from '@/lib/utils';
 
 interface OrderStatisticsPanelProps {
     statistics: OrderStatistics | null;
@@ -10,11 +11,7 @@ interface OrderStatisticsPanelProps {
 
 const OrderStatisticsPanel: React.FC<OrderStatisticsPanelProps> = ({ statistics, loading }) => {
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2
-        }).format(value);
+        return formatCurrency(value);
     };
 
     const statCards = [
@@ -27,7 +24,7 @@ const OrderStatisticsPanel: React.FC<OrderStatisticsPanelProps> = ({ statistics,
         {
             title: 'Total Sales',
             value: formatCurrency(statistics?.totalSales as number),
-            icon: 'pi pi-dollar',
+            icon: 'pi pi-money-bill',
             color: 'bg-green-100 text-green-600'
         },
         {
@@ -106,7 +103,7 @@ const OrderStatisticsPanel: React.FC<OrderStatisticsPanelProps> = ({ statistics,
                     ) : (
                         <div className="flex flex-column align-items-center justify-content-center p-3">
                             <div className={`flex align-items-center justify-content-center border-round-xl bg-green-100 text-green-600 mb-3`} style={{ width: '5rem', height: '5rem' }}>
-                                <i className="pi pi-dollar text-4xl"></i>
+                                <i className="pi pi-money-bill text-4xl"></i>
                             </div>
                             <div className="text-900 font-bold text-4xl mb-2">{formatCurrency(statistics?.totalSales as number)}</div>
                             <div className="text-500 font-medium text-xl">Total Sales</div>

@@ -4,6 +4,7 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Product, ProductStatus } from '@/types/product';
+import { formatCurrency } from '@/lib/utils';
 
 interface ProductTableProps {
     products: Product[];
@@ -40,10 +41,7 @@ const ProductTable = (props: ProductTableProps) => {
     } = props;
 
     const formatCurrency = (value: number) => {
-        return value.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        });
+        return formatCurrency(value);
     };
 
     const idBodyTemplate = (rowData: Product) => {

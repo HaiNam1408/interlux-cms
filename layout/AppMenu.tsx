@@ -47,7 +47,7 @@ const AppMenu = () => {
                         },
                         {
                             label: 'Refunds',
-                            icon: 'pi pi-fw pi-dollar',
+                            icon: 'pi pi-fw pi-money-bill',
                             to: '/order/refunds'
                         }
                     ]

@@ -2,6 +2,7 @@ import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { OrderItem } from '@/types/order';
+import { formatCurrency } from '@/lib/utils';
 
 interface OrderItemsTableProps {
     items: OrderItem[];
@@ -41,11 +42,11 @@ const OrderItemsTable: React.FC<OrderItemsTableProps> = ({ items }) => {
     };
 
     const priceTemplate = (item: OrderItem) => {
-        return `$${item.price.toFixed(2)}`;
+        return formatCurrency(item.price);
     };
 
     const totalTemplate = (item: OrderItem) => {
-        return `$${item.total.toFixed(2)}`;
+        return formatCurrency(item.total);
     };
 
     return (

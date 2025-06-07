@@ -7,6 +7,7 @@ import { Order } from '@/types/order';
 import OrderStatusBadge from './OrderStatusBadge';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from 'primereact/skeleton';
+import { formatCurrency } from '@/lib/utils';
 
 interface RecentOrdersPanelProps {
     orders: Order[];
@@ -41,7 +42,7 @@ const RecentOrdersPanel: React.FC<RecentOrdersPanelProps> = ({ orders, loading }
 
     const totalTemplate = (order: Order) => {
         return (
-            <span className="font-semibold">${order.total.toFixed(2)}</span>
+            <span className="font-semibold">{formatCurrency(order.total)}</span>
         );
     };
 

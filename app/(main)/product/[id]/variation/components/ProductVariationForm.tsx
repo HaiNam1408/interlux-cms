@@ -164,7 +164,7 @@ const ProductVariationForm = (props: ProductVariationFormProps) => {
 
                 <div className="field col-12 md:col-6">
                     <label htmlFor="price">Price</label>
-                    <InputNumber id="price" value={productVariation.price} onValueChange={(e: any) => onInputNumberChange(e, 'price')} mode="currency" currency="USD" locale="en-US" min={0} />
+                    <InputNumber id="price" value={productVariation.price} onValueChange={(e: any) => onInputNumberChange(e, 'price')} mode="currency" currency="VND" locale="vi-VN" min={0} />
                 </div>
 
                 <div className="field col-12 md:col-6">
