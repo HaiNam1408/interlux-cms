@@ -163,7 +163,7 @@ const ProductForm = (props: ProductFormProps) => {
                                 name="images"
                                 multiple
                                 accept="image/*"
-                                maxFileSize={10000000}
+                                maxFileSize={20000000}
                                 auto={true}
                                 mode="advanced"
                                 chooseLabel="Choose Images"

@@ -57,7 +57,7 @@ const CategoryImageUpload: React.FC<CategoryImageUploadProps> = ({
                     ref={fileUploadRef}
                     name="image"
                     accept="image/*"
-                    maxFileSize={1000000}
+                    maxFileSize={20000000}
                     mode="basic"
                     auto
                     chooseLabel="Choose Image"

@@ -261,7 +261,7 @@ const ProductVariationForm = (props: ProductVariationFormProps) => {
                         name="images"
                         multiple
                         accept="image/*"
-                        maxFileSize={1000000}
+                        maxFileSize={20000000}
                         auto={true}
                         mode="advanced"
                         chooseLabel="Choose Images"
